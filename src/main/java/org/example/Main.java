@@ -1,5 +1,7 @@
 package org.example;
 
+import org.example.classpath.ClassPath;
+
 /**
  * @auth nss
  * @date 2023/12/25
@@ -17,7 +19,14 @@ public class Main {
     }
 
     private static void startJVM(Cmd cmd) {
-        System.out.println(cmd);
-        System.out.println("classpath:" + cmd.getCpOption() + " class:" + cmd.getClassName() + " args:" + cmd.getArgs().length);
+        ClassPath classPath = new ClassPath(cmd.getXjreOption(), cmd.getCpOption());
+        try {
+            byte[] bytes = classPath.readClass(cmd.getClassName());
+            for (byte aByte : bytes) {
+                System.out.print(Integer.toHexString(aByte)+" ");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 复合类路径
  * @auth nss
  * @date 2023/12/26
  */
@@ -16,7 +17,7 @@ public class CompositeEntry implements Entry{
     private final List<Entry> entries;
 
     public CompositeEntry(String pathList) {
-        String[] paths = pathList.split(File.pathSeparator);
+        String[] paths = pathList.split(PATH_SEPARATOR);
         entries = new ArrayList<>(paths.length);
         for (String path : paths) {
             entries.add(Entry.create(path));

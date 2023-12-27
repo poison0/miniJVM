@@ -7,6 +7,7 @@ import java.util.Enumeration;
 import java.util.zip.ZipFile;
 
 /**
+ * 压缩包
  * @auth nss
  * @date 2023/12/26
  */
@@ -17,7 +18,7 @@ public class ZipEntry implements Entry{
     public ZipEntry(String path) {
         File file = new File(path);
         if(!file.exists()){
-            throw new RuntimeException("dir not exists");
+            throw new RuntimeException("dir not exists:"+path);
         }
         //转为绝对路径
         this.absPath = file.getAbsolutePath();
@@ -35,13 +36,14 @@ public class ZipEntry implements Entry{
             // 遍历 ZIP 文件中的条目并列出文件
             while (entries.hasMoreElements()) {
                 java.util.zip.ZipEntry entry = entries.nextElement();
-                if(entry.getName().equals(className)){
-                    return entry.getExtra();
+                if(entry.getName().replace("/",".").equals(className)){
+                    return zipFile.getInputStream(entry).readAllBytes();
                 }
             }
-            throw new RuntimeException("class not found");
+            throw new RuntimeException("class not found:"+className);
         }catch (Exception e){
-            throw new RuntimeException("read class error");
+            throw new RuntimeException("read class error:"+className+" "+e.getMessage());
         }
     }
+
 }
