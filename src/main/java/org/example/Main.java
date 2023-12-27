@@ -23,7 +23,7 @@ public class Main {
         try {
             byte[] bytes = classPath.readClass(cmd.getClassName());
             for (byte aByte : bytes) {
-                System.out.print(Integer.toHexString(aByte)+" ");
+                System.out.print(Byte.toUnsignedInt(aByte)+" ");
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
