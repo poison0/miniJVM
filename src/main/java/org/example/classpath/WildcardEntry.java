@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * 通配符类路径
  * @auth nss
  * @date 2023/12/26
  */
@@ -18,11 +19,11 @@ public class WildcardEntry implements Entry{
         String baseDir = path.replace("*", "");
         File directory = new File(baseDir);
         if (!directory.isDirectory()) {
-            throw new RuntimeException("path is not directory");
+            throw new RuntimeException("path is not directory: " + baseDir);
         }
         File[] files = directory.listFiles();
         if(files == null){
-            throw new RuntimeException("path is not directory");
+            throw new RuntimeException("path is not directory: " + baseDir);
         }
         for (File file : files) {
             if (file.isFile()) {
@@ -43,7 +44,7 @@ public class WildcardEntry implements Entry{
                 // ignore
             }
         }
-        throw new RuntimeException("class not found");
+        throw new RuntimeException("class not found: " + className);
     }
 
     public String toString(){

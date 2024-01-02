@@ -2,6 +2,10 @@ package org.example;
 
 import org.apache.commons.cli.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 
 /**
@@ -46,16 +50,16 @@ public class ParseCmd {
 
             if (cmdLine.hasOption("cp")) {
                 cmd.setCpOption(cmdLine.getOptionValue("cp"));
-                cmd.setClassName(cmdLine.getArgs()[0]);
-                cmd.setArgs(Arrays.copyOfRange(cmdLine.getArgs(), 1, cmdLine.getArgs().length));
             }
             if (cmdLine.hasOption("classpath")) {
                 cmd.setCpOption(cmdLine.getOptionValue("cp"));
+            }
+            if (cmdLine.getArgs().length > 0) {
                 cmd.setClassName(cmdLine.getArgs()[0]);
+            }
+            if (cmdLine.getArgs().length > 1) {
                 cmd.setArgs(Arrays.copyOfRange(cmdLine.getArgs(), 1, cmdLine.getArgs().length));
             }
-
-
         } catch (ParseException e) {
             // 捕获解析异常
             System.err.println("命令行参数解析失败: " + e.getMessage());
