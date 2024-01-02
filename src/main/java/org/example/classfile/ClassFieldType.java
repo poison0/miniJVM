@@ -11,8 +11,28 @@ import org.example.constant.ClassFieldTypeEnum;
 @Data
 public class ClassFieldType {
 
-    protected Integer[] ints;
+    protected Integer[] bytes;
     protected ClassFieldTypeEnum type;
+
+    public String toHex() {
+        StringBuilder sb = new StringBuilder();
+        for (Integer b : this.bytes) {
+            sb.append(Integer.toHexString(b).toUpperCase());
+        }
+        return sb.toString();
+    }
+    public Long toValue() {
+        if (type == ClassFieldTypeEnum.CUSTOM_BYTES) {
+            throw new RuntimeException("不支持的类型");
+        }
+        long result = 0L;
+        // 因为字节不可能超过8个，所以不用考虑溢出
+        for (Integer b : this.bytes) {
+            result = result << 8;
+            result = result | b;
+        }
+        return result;
+    }
 
     public static class U1 extends ClassFieldType {
 
@@ -20,7 +40,7 @@ public class ClassFieldType {
         }
 
         public U1(Integer[] value) {
-            this.ints = value;
+            this.bytes = value;
             this.type = ClassFieldTypeEnum.U1;
         }
     }
@@ -29,7 +49,7 @@ public class ClassFieldType {
         }
 
         public U2(Integer[] value) {
-            this.ints = value;
+            this.bytes = value;
             this.type = ClassFieldTypeEnum.U2;
         }
     }
@@ -38,7 +58,7 @@ public class ClassFieldType {
         }
 
         public U4(Integer[] value) {
-            this.ints = value;
+            this.bytes = value;
             this.type = ClassFieldTypeEnum.U4;
         }
     }
@@ -47,8 +67,17 @@ public class ClassFieldType {
         }
 
         public U8(Integer[] value) {
-            this.ints = value;
+            this.bytes = value;
             this.type = ClassFieldTypeEnum.U8;
+        }
+    }
+    public static class CustomBytes extends ClassFieldType {
+        public CustomBytes() {
+        }
+
+        public CustomBytes(Integer[] value) {
+            this.bytes = value;
+            this.type = ClassFieldTypeEnum.CUSTOM_BYTES;
         }
     }
 }
