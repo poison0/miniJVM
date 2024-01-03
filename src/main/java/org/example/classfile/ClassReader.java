@@ -1,10 +1,8 @@
 package org.example.classfile;
 
-import org.example.classfile.classfield.Attributes;
-import org.example.classfile.classfield.ClassFile;
-import org.example.classfile.classfield.Fields;
-import org.example.classfile.classfield.Methods;
+import org.example.classfile.classfield.*;
 import org.example.constant.ClassFieldTypeEnum;
+import org.example.constant.ConstantInfoTagEnum;
 
 import java.util.LinkedList;
 
@@ -19,7 +17,7 @@ public class ClassReader {
         classFile.setMagic(readAndCheckMagic(classFileBytes));
         classFile.setMinorVersion((ClassFieldType.U2)readClassFile(ClassFieldTypeEnum.U2, classFileBytes));
         classFile.setMajorVersion(readAndCheckVersion(classFile.getMinorVersion(), classFileBytes));
-//        classFile.setConstantPoolCount((ClassFieldType.U2)readClassFile(ClassFieldTypeEnum.U2, classFileBytes));
+        classFile.setConstantPoolCount((ClassFieldType.U2)readClassFile(ClassFieldTypeEnum.U2, classFileBytes));
 //        classFile.setConstantPool(readClassFile(ClassFieldTypeEnum.CONSTANT_POOL, classFileBytes, classFile.getConstantPoolCount().getInts()[0]));
         classFile.setAccessFlags((ClassFieldType.U2)readClassFile(ClassFieldTypeEnum.U2, classFileBytes));
         classFile.setThisClass((ClassFieldType.U2)readClassFile(ClassFieldTypeEnum.U2, classFileBytes));
@@ -34,6 +32,37 @@ public class ClassReader {
 //        classFile.setAttributes(readClassFile(ClassFieldTypeEnum.ATTRIBUTES, classFileBytes, classFile.getAttributesCount().getInts()[0]));
         return classFile;
     }
+
+    private static ConstantPool readConstantPool(LinkedList<Integer> classFileBytes, Integer length) {
+        ConstantPool constantPool = new ConstantPool();
+        ConstantInfo[] constantInfos = new ConstantInfo[length];
+        for (int i = 0; i < length; i++) {
+            ClassFieldType.U1 tag = (ClassFieldType.U1) readClassFile(ClassFieldTypeEnum.U1, classFileBytes);
+            constantInfos[i] = createConstantInfo(tag.toValue().intValue(), classFileBytes);
+        }
+        constantPool.setConstantInfos(constantInfos);
+        return constantPool;
+    }
+
+    /**
+     * 获取单个常量池常量
+     */
+    private static ConstantInfo createConstantInfo(Integer value, LinkedList<Integer> classFileBytes) {
+        ConstantInfoTagEnum tag = ConstantInfoTagEnum.getConstantInfoTagEnum(value);
+        switch (tag){
+            case CONSTANT_Utf8_info -> {
+                ClassFieldType.U2 length = (ClassFieldType.U2) readClassFile(ClassFieldTypeEnum.U2, classFileBytes);
+                ClassFieldType.CustomBytes bytes = (ClassFieldType.CustomBytes) readClassFile(classFileBytes, length.toValue().intValue());
+                return new ConstantInfo.ConstantUtf8Info(length.toValue().intValue(), bytes);
+            }
+            case CONSTANT_Integer_info -> {
+                ClassFieldType.U4 bytes = (ClassFieldType.U4) readClassFile(ClassFieldTypeEnum.U4, classFileBytes);
+                return new ConstantInfo.ConstantIntegerInfo(bytes);
+            }
+            default -> throw new RuntimeException("not support tag");
+        }
+    }
+
 
     private static Fields[] readFields(LinkedList<Integer> classFileBytes, Integer length) {
         Fields[] fields = new Fields[length];

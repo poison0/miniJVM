@@ -28,7 +28,7 @@ public class ClassFile {
     /**
      * 常量池
      */
-    private ConstantPool[] constantPool;
+    private ConstantPool constantPool;
     /**
      * 访问标志
      */
