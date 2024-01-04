@@ -1,4 +1,4 @@
-package org.example.classfile.classfield;
+package org.example.classfile.classfield.constantpool;
 
 import lombok.Data;
 

@@ -2,6 +2,7 @@ package org.example.classfile.classfield;
 
 import lombok.Data;
 import org.example.classfile.ClassFieldType;
+import org.example.classfile.classfield.constantpool.ConstantPool;
 
 /**
  * @auth nss

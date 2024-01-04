@@ -1,6 +1,10 @@
 package org.example.classfile;
 
 import org.example.classfile.classfield.*;
+import org.example.classfile.classfield.constantpool.ConstantInfo;
+import org.example.classfile.classfield.constantpool.ConstantIntegerInfo;
+import org.example.classfile.classfield.constantpool.ConstantPool;
+import org.example.classfile.classfield.constantpool.ConstantUtf8Info;
 import org.example.constant.ClassFieldTypeEnum;
 import org.example.constant.ConstantInfoTagEnum;
 
@@ -18,7 +22,7 @@ public class ClassReader {
         classFile.setMinorVersion((ClassFieldType.U2)readClassFile(ClassFieldTypeEnum.U2, classFileBytes));
         classFile.setMajorVersion(readAndCheckVersion(classFile.getMinorVersion(), classFileBytes));
         classFile.setConstantPoolCount((ClassFieldType.U2)readClassFile(ClassFieldTypeEnum.U2, classFileBytes));
-//        classFile.setConstantPool(readClassFile(ClassFieldTypeEnum.CONSTANT_POOL, classFileBytes, classFile.getConstantPoolCount().getInts()[0]));
+        classFile.setConstantPool(readConstantPool(classFileBytes, classFile.getConstantPoolCount().toValue().intValue()));
         classFile.setAccessFlags((ClassFieldType.U2)readClassFile(ClassFieldTypeEnum.U2, classFileBytes));
         classFile.setThisClass((ClassFieldType.U2)readClassFile(ClassFieldTypeEnum.U2, classFileBytes));
         classFile.setSuperClass((ClassFieldType.U2)readClassFile(ClassFieldTypeEnum.U2, classFileBytes));
@@ -53,11 +57,11 @@ public class ClassReader {
             case CONSTANT_Utf8_info -> {
                 ClassFieldType.U2 length = (ClassFieldType.U2) readClassFile(ClassFieldTypeEnum.U2, classFileBytes);
                 ClassFieldType.CustomBytes bytes = (ClassFieldType.CustomBytes) readClassFile(classFileBytes, length.toValue().intValue());
-                return new ConstantInfo.ConstantUtf8Info(length.toValue().intValue(), bytes);
+                return new ConstantUtf8Info(length.toValue().intValue(), bytes);
             }
             case CONSTANT_Integer_info -> {
                 ClassFieldType.U4 bytes = (ClassFieldType.U4) readClassFile(ClassFieldTypeEnum.U4, classFileBytes);
-                return new ConstantInfo.ConstantIntegerInfo(bytes);
+                return new ConstantIntegerInfo(bytes);
             }
             default -> throw new RuntimeException("not support tag");
         }
