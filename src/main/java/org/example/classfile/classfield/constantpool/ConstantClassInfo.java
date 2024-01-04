@@ -14,8 +14,4 @@ public class ConstantClassInfo implements ConstantInfo {
     public ConstantClassInfo(int nameIndex) {
         this.nameIndex = nameIndex;
     }
-    @Override
-    public ConstantInfoTagEnum getTag() {
-        return tag;
-    }
 }

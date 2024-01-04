@@ -17,8 +17,4 @@ public class ConstantUtf8Info implements ConstantInfo {
         this.length = length;
         this.bytes = bytes;
     }
-    @Override
-    public ConstantInfoTagEnum getTag() {
-        return tag;
-    }
 }

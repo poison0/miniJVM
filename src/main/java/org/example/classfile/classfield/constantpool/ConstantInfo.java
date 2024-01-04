@@ -1,7 +1,5 @@
 package org.example.classfile.classfield.constantpool;
 
-import lombok.Data;
-import org.example.classfile.ClassFieldType;
 import org.example.constant.ConstantInfoTagEnum;
 
 /**
@@ -10,6 +8,5 @@ import org.example.constant.ConstantInfoTagEnum;
  */
 public interface ConstantInfo {
     ConstantInfoTagEnum getTag();
-
 }
 
