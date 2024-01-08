@@ -79,5 +79,12 @@ public class ClassFieldType {
             this.bytes = value;
             this.type = ClassFieldTypeEnum.CUSTOM_BYTES;
         }
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            for (Integer b : this.bytes) {
+                sb.append((char) b.intValue());
+            }
+            return sb.toString();
+        }
     }
 }

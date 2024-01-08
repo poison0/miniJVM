@@ -11,9 +11,9 @@ import org.example.constant.ConstantInfoTagEnum;
 @Data
 public class ConstantUtf8Info implements ConstantInfo {
     private ConstantInfoTagEnum tag = ConstantInfoTagEnum.CONSTANT_Utf8_info;
-    private final int length;
+    private final ClassFieldType.U2 length;
     private final ClassFieldType.CustomBytes bytes;
-    public ConstantUtf8Info(int length, ClassFieldType.CustomBytes bytes) {
+    public ConstantUtf8Info(ClassFieldType.U2 length, ClassFieldType.CustomBytes bytes) {
         this.length = length;
         this.bytes = bytes;
     }

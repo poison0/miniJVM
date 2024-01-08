@@ -57,7 +57,7 @@ public class ClassReader {
             case CONSTANT_Utf8_info -> {
                 ClassFieldType.U2 length = (ClassFieldType.U2) readClassFile(ClassFieldTypeEnum.U2, classFileBytes);
                 ClassFieldType.CustomBytes bytes = (ClassFieldType.CustomBytes) readClassFile(classFileBytes, length.toValue().intValue());
-                return new ConstantUtf8Info(length.toValue().intValue(), bytes);
+                return new ConstantUtf8Info(length, bytes);
             }
             case CONSTANT_Integer_info -> {
                 ClassFieldType.U4 bytes = (ClassFieldType.U4) readClassFile(ClassFieldTypeEnum.U4, classFileBytes);
