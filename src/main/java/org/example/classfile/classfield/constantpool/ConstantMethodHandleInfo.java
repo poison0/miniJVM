@@ -9,12 +9,12 @@ import org.example.constant.ConstantInfoTagEnum;
  * @date 2024/1/10
  */
 @Data
-public class ConstantInfoMethodHandle implements ConstantInfo {
+public class ConstantMethodHandleInfo implements ConstantInfo {
     private final ConstantInfoTagEnum tag = ConstantInfoTagEnum.CONSTANT_MethodHandle_info;
     private final ClassFieldType.U1 referenceKind;
     private final ClassFieldType.U2 referenceIndex;
 
-    public ConstantInfoMethodHandle(ClassFieldType.U1 referenceKind, ClassFieldType.U2 referenceIndex) {
+    public ConstantMethodHandleInfo(ClassFieldType.U1 referenceKind, ClassFieldType.U2 referenceIndex) {
         this.referenceKind = referenceKind;
         this.referenceIndex = referenceIndex;
     }

@@ -10,7 +10,7 @@ import org.example.constant.ConstantInfoTagEnum;
  */
 @Data
 public class ConstantMethodrefInfo implements ConstantInfo {
-    private ConstantInfoTagEnum tag = ConstantInfoTagEnum.CONSTANT_Fieldref_info;
+    private ConstantInfoTagEnum tag = ConstantInfoTagEnum.CONSTANT_Methodref_info;
     private final ClassFieldType.U2 classIndex;
     private final ClassFieldType.U2 nameAndTypeIndex;
     public ConstantMethodrefInfo(ClassFieldType.U2 classIndex, ClassFieldType.U2 nameAndTypeIndex) {

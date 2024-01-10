@@ -9,12 +9,12 @@ import org.example.constant.ConstantInfoTagEnum;
  * @date 2024/1/10
  */
 @Data
-public class ConstantInfoInvokeDynamic implements ConstantInfo{
+public class ConstantInvokeDynamicInfo implements ConstantInfo{
 private final ConstantInfoTagEnum tag = ConstantInfoTagEnum.CONSTANT_InvokeDynamic_info;
     private final ClassFieldType.U2 bootstrapMethodAttrIndex;
     private final ClassFieldType.U2 nameAndTypeIndex;
 
-    public ConstantInfoInvokeDynamic(ClassFieldType.U2 bootstrapMethodAttrIndex, ClassFieldType.U2 nameAndTypeIndex) {
+    public ConstantInvokeDynamicInfo(ClassFieldType.U2 bootstrapMethodAttrIndex, ClassFieldType.U2 nameAndTypeIndex) {
         this.bootstrapMethodAttrIndex = bootstrapMethodAttrIndex;
         this.nameAndTypeIndex = nameAndTypeIndex;
     }

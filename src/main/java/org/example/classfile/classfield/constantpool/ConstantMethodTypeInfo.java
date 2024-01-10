@@ -9,11 +9,11 @@ import org.example.constant.ConstantInfoTagEnum;
  * @date 2024/1/10
  */
 @Data
-public class ConstantInfoMethodType implements ConstantInfo{
+public class ConstantMethodTypeInfo implements ConstantInfo{
     private final ConstantInfoTagEnum tag = ConstantInfoTagEnum.CONSTANT_MethodType_info;
     private final ClassFieldType.U2 descriptorIndex;
 
-    public ConstantInfoMethodType(ClassFieldType.U2 descriptorIndex) {
+    public ConstantMethodTypeInfo(ClassFieldType.U2 descriptorIndex) {
         this.descriptorIndex = descriptorIndex;
     }
     public int getDescriptorIndexUtf8Index() {

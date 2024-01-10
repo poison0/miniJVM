@@ -41,11 +41,16 @@ public class ClassReader {
 
     private static ConstantPool readConstantPool(LinkedList<Integer> classFileBytes, Integer length) {
         ConstantPool constantPool = new ConstantPool();
-        ConstantInfo[] constantInfos = new ConstantInfo[length];
-        for (int i = 0; i < length; i++) {
+        //从1开始，因为第0个位置是空
+        ConstantInfo[] constantInfos = new ConstantInfo[length+1];
+        for (int i = 1; i < length; i++) {
             ClassFieldType.U1 tag = (ClassFieldType.U1) ClassReaderUtil.readClassFileBytes(ClassFieldTypeEnum.U1, classFileBytes);
-            //获取单个常量
-            constantInfos[i] = ConstantInfoTagEnum.getConstantInfoTagEnum(tag.toValue().intValue()).getConstantInfo(classFileBytes);
+            ConstantInfoTagEnum tagEnum = ConstantInfoTagEnum.getConstantInfoTagEnum(tag.toValue().intValue());
+            constantInfos[i] = tagEnum.getConstantInfo(classFileBytes);
+            //因为jvm开发时是处于32位机为主流的时代，所以为了向下兼容，double和long类型的常量占两个空间
+            if(tagEnum == ConstantInfoTagEnum.CONSTANT_Double_info || tagEnum == ConstantInfoTagEnum.CONSTANT_Long_info){
+                i++;
+            }
         }
         constantPool.setConstantInfos(constantInfos);
         return constantPool;
@@ -85,7 +90,7 @@ public class ClassReader {
 
     private static ClassFieldType.U4 readAndCheckMagic(LinkedList<Integer> classFileBytes) {
         ClassFieldType.U4 magic = (ClassFieldType.U4) ClassReaderUtil.readClassFileBytes(ClassFieldTypeEnum.U4, classFileBytes);
-        if (!magic.toHex().equals("CAFEBABE")) {
+        if (!magic.toHex().equals("CA FE BA BE")) {
             throw new RuntimeException("java.lang.ClassFormatError: magic!");
         }
         return magic;

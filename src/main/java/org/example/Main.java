@@ -33,10 +33,6 @@ public class Main {
                 System.out.print(unsignedInt+" ");
             };
             ClassFile classFile = ClassReader.readClassFile(list);
-            System.out.println(classFile.getMagic().toHex());
-            System.out.println(classFile.getMinorVersion().toValue());
-            System.out.println(classFile.getMajorVersion().toValue());
-            System.out.println(classFile);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
