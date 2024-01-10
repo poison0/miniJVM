@@ -27,7 +27,6 @@ public class ClassFieldType {
         this.hexs = toHex();
     }
     public String toHex() {
-        StringBuilder sb = new StringBuilder();
         return Arrays.stream(this.bytes).map(b -> {
             String upperCase = Integer.toHexString(b).toUpperCase();
             if (upperCase.length() == 1) {
