@@ -2,6 +2,7 @@ package org.example.classfile.classfield;
 
 import lombok.Data;
 import org.example.classfile.ClassFieldType;
+import org.example.classfile.classfield.attributes.Attribute;
 
 /**
  * @auth nss
@@ -13,5 +14,5 @@ public class Fields {
     private ClassFieldType.U2 nameIndex;
     private ClassFieldType.U2 descriptorIndex;
     private ClassFieldType.U2 attributesCount;
-    private Attributes[] attributes;
+    private Attribute[] attributes;
 }

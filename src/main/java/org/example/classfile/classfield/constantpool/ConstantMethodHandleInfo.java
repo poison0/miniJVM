@@ -19,7 +19,7 @@ public class ConstantMethodHandleInfo implements ConstantInfo {
         this.referenceIndex = referenceIndex;
     }
     public int getReferenceIndex() {
-        return referenceIndex.toValue().intValue();
+        return referenceIndex.toInteger();
     }
 
 }

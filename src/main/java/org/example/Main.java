@@ -23,16 +23,21 @@ public class Main {
     }
 
     private static void startJVM(Cmd cmd) {
-        ClassPath classPath = new ClassPath(cmd.getXjreOption(), cmd.getCpOption());
         try {
+            // 读取class文件
+            ClassPath classPath = new ClassPath(cmd.getXjreOption(), cmd.getCpOption());
             byte[] bytes = classPath.readClass(cmd.getClassName());
+
             LinkedList<Integer> list = new LinkedList<>();
             for (byte aByte : bytes) {
                 int unsignedInt = Byte.toUnsignedInt(aByte);
                 list.add(unsignedInt);
                 System.out.print(unsignedInt+" ");
             };
-            ClassFile classFile = ClassReader.readClassFile(list);
+            // 解析class文件
+            ClassFile classFile = ClassReader.analyzeClassFile(list);
+
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

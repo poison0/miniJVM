@@ -48,6 +48,10 @@ public class ClassFieldType {
         return result;
     }
 
+    public Integer toInteger() {
+        return toValue().intValue();
+    }
+
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (Integer b : this.bytes) {

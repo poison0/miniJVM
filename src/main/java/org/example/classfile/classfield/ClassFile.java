@@ -2,6 +2,7 @@ package org.example.classfile.classfield;
 
 import lombok.Data;
 import org.example.classfile.ClassFieldType;
+import org.example.classfile.classfield.attributes.Attribute;
 import org.example.classfile.classfield.constantpool.ConstantPool;
 
 /**
@@ -49,7 +50,7 @@ public class ClassFile {
     /**
      * 接口表
      */
-    private Interfaces[] interfaces;
+    private Interface[] interfaces;
     /**
      * 字段计数器
      */
@@ -73,6 +74,6 @@ public class ClassFile {
     /**
      * 属性表
      */
-    private Attributes[] attributes;
+    private Attribute[] attributes;
 
 }

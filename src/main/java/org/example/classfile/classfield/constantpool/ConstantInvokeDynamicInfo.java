@@ -19,10 +19,10 @@ private final ConstantInfoTagEnum tag = ConstantInfoTagEnum.CONSTANT_InvokeDynam
         this.nameAndTypeIndex = nameAndTypeIndex;
     }
     public int getNameAndTypeIndex() {
-        return nameAndTypeIndex.toValue().intValue();
+        return nameAndTypeIndex.toInteger();
     }
     public int getBootstrapMethodAttrIndex() {
-        return bootstrapMethodAttrIndex.toValue().intValue();
+        return bootstrapMethodAttrIndex.toInteger();
     }
 
 }

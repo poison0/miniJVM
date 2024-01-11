@@ -17,6 +17,6 @@ public class ConstantStringInfo implements ConstantInfo{
     }
 
     public int getUtf8Index() {
-        return stringIndex.toValue().intValue();
+        return stringIndex.toInteger();
     }
 }

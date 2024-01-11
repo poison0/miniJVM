@@ -10,6 +10,23 @@ import java.util.LinkedList;
  * @date 2024/1/10
  */
 public class ClassReaderUtil {
+
+    public static ClassFieldType.U1 getU1(LinkedList<Integer> classFileBytes){
+        return (ClassFieldType.U1) ClassReaderUtil.readClassFileBytes(ClassFieldTypeEnum.U1, classFileBytes);
+    }
+    public static ClassFieldType.U2 getU2(LinkedList<Integer> classFileBytes){
+        return (ClassFieldType.U2) ClassReaderUtil.readClassFileBytes(ClassFieldTypeEnum.U2, classFileBytes);
+    }
+    public static ClassFieldType.U4 getU4(LinkedList<Integer> classFileBytes){
+        return (ClassFieldType.U4) ClassReaderUtil.readClassFileBytes(ClassFieldTypeEnum.U4, classFileBytes);
+    }
+    public static ClassFieldType.U8 getU8(LinkedList<Integer> classFileBytes){
+        return (ClassFieldType.U8) ClassReaderUtil.readClassFileBytes(ClassFieldTypeEnum.U8, classFileBytes);
+    }
+    public static ClassFieldType.CustomBytes getCustomBytes(LinkedList<Integer> classFileBytes, int length){
+        return (ClassFieldType.CustomBytes) ClassReaderUtil.readClassFileBytes(classFileBytes, length);
+    }
+
     /**
      * 读取class文件字段，并切割掉已读取的部分
      */

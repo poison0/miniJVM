@@ -17,6 +17,6 @@ public class ConstantMethodTypeInfo implements ConstantInfo{
         this.descriptorIndex = descriptorIndex;
     }
     public int getDescriptorIndexUtf8Index() {
-        return descriptorIndex.toValue().intValue();
+        return descriptorIndex.toInteger();
     }
 }

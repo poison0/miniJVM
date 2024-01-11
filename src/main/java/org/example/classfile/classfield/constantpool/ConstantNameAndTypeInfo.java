@@ -18,9 +18,9 @@ public class ConstantNameAndTypeInfo implements ConstantInfo {
         this.descriptorIndex = descriptorIndex;
     }
     public int getNameIndexUtf8Index() {
-        return nameIndex.toValue().intValue();
+        return nameIndex.toInteger();
     }
     public int getDescriptorIndexUtf8Index() {
-        return descriptorIndex.toValue().intValue();
+        return descriptorIndex.toInteger();
     }
 }
