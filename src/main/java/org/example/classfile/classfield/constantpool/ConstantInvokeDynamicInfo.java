@@ -1,6 +1,5 @@
 package org.example.classfile.classfield.constantpool;
 
-import lombok.Data;
 import org.example.classfile.ClassFieldType;
 import org.example.constant.ConstantInfoTagEnum;
 
@@ -8,21 +7,9 @@ import org.example.constant.ConstantInfoTagEnum;
  * @auth nss
  * @date 2024/1/10
  */
-@Data
-public class ConstantInvokeDynamicInfo implements ConstantInfo{
-private final ConstantInfoTagEnum tag = ConstantInfoTagEnum.CONSTANT_InvokeDynamic_info;
-    private final ClassFieldType.U2 bootstrapMethodAttrIndex;
-    private final ClassFieldType.U2 nameAndTypeIndex;
-
-    public ConstantInvokeDynamicInfo(ClassFieldType.U2 bootstrapMethodAttrIndex, ClassFieldType.U2 nameAndTypeIndex) {
-        this.bootstrapMethodAttrIndex = bootstrapMethodAttrIndex;
-        this.nameAndTypeIndex = nameAndTypeIndex;
+public record ConstantInvokeDynamicInfo(ClassFieldType.U2 bootstrapMethodAttrIndex, ClassFieldType.U2 nameAndTypeIndex) implements ConstantInfo{
+    @Override
+    public ConstantInfoTagEnum getTag() {
+        return ConstantInfoTagEnum.CONSTANT_InvokeDynamic_info;
     }
-    public int getNameAndTypeIndex() {
-        return nameAndTypeIndex.toInteger();
-    }
-    public int getBootstrapMethodAttrIndex() {
-        return bootstrapMethodAttrIndex.toInteger();
-    }
-
 }

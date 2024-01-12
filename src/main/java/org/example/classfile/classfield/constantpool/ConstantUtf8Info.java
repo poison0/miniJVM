@@ -1,6 +1,5 @@
 package org.example.classfile.classfield.constantpool;
 
-import lombok.Data;
 import org.example.classfile.ClassFieldType;
 import org.example.constant.ConstantInfoTagEnum;
 
@@ -8,13 +7,9 @@ import org.example.constant.ConstantInfoTagEnum;
  * @auth nss
  * @date 2024/1/4
  */
-@Data
-public class ConstantUtf8Info implements ConstantInfo {
-    private ConstantInfoTagEnum tag = ConstantInfoTagEnum.CONSTANT_Utf8_info;
-    private final ClassFieldType.U2 length;
-    private final ClassFieldType.CustomBytes bytes;
-    public ConstantUtf8Info(ClassFieldType.U2 length, ClassFieldType.CustomBytes bytes) {
-        this.length = length;
-        this.bytes = bytes;
+public record ConstantUtf8Info(ClassFieldType.U2 length, ClassFieldType.CustomBytes bytes)implements ConstantInfo {
+    @Override
+    public ConstantInfoTagEnum getTag() {
+        return ConstantInfoTagEnum.CONSTANT_Utf8_info;
     }
 }

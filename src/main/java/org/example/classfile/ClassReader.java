@@ -2,8 +2,10 @@ package org.example.classfile;
 
 import org.example.classfile.classfield.*;
 import org.example.classfile.classfield.attributes.Attribute;
+import org.example.classfile.classfield.attributes.AttributeInfo;
 import org.example.classfile.classfield.constantpool.ConstantInfo;
 import org.example.classfile.classfield.constantpool.ConstantPool;
+import org.example.constant.AttributeEnum;
 import org.example.constant.ConstantInfoTagEnum;
 import org.example.util.ClassReaderUtil;
 
@@ -31,11 +33,11 @@ public class ClassReader {
         classFile.setInterfacesCount(ClassReaderUtil.getU2(classFileBytes));
         classFile.setInterfaces(readInterfaces(classFileBytes, classFile.getInterfacesCount().toInteger()));
         classFile.setFieldsCount(ClassReaderUtil.getU2(classFileBytes));
-        classFile.setFields(readFields(classFileBytes, classFile.getFieldsCount().toInteger()));
+        classFile.setFields(readFields(classFileBytes,classFile.getConstantPool(), classFile.getFieldsCount().toInteger()));
         classFile.setMethodsCount(ClassReaderUtil.getU2(classFileBytes));
-        classFile.setMethods(readMethods(classFileBytes, classFile.getMethodsCount().toInteger()));
+        classFile.setMethods(readMethods(classFileBytes, classFile.getConstantPool(),classFile.getMethodsCount().toInteger()));
         classFile.setAttributesCount(ClassReaderUtil.getU2(classFileBytes));
-        classFile.setAttributes(readAttributeInfo(classFileBytes, classFile.getAttributesCount().toInteger()));
+        classFile.setAttributes(readAttributeInfo(classFileBytes, classFile.getConstantPool(),classFile.getAttributesCount().toInteger()));
         return classFile;
     }
 
@@ -71,35 +73,45 @@ public class ClassReader {
         return constantPool;
     }
 
-    private static Fields[] readFields(LinkedList<Integer> classFileBytes, Integer length) {
+    private static Fields[] readFields(LinkedList<Integer> classFileBytes,ConstantPool constantPool, Integer length) {
         Fields[] fields = new Fields[length];
         for (int i = 0; i < length; i++) {
             fields[i] = new Fields();
-            readMethodOrField(classFileBytes, fields[i]);
+            readMethodOrField(classFileBytes,constantPool, fields[i]);
         }
         return fields;
     }
 
-    private static Methods[] readMethods(LinkedList<Integer> classFileBytes, Integer length) {
+    private static Methods[] readMethods(LinkedList<Integer> classFileBytes,ConstantPool constantPool, Integer length) {
         Methods[] method = new Methods[length];
         for (int i = 0; i < length; i++) {
             method[i] = new Methods();
-            readMethodOrField(classFileBytes, method[i]);
+            readMethodOrField(classFileBytes,constantPool, method[i]);
         }
         return method;
     }
 
-    private static void readMethodOrField(LinkedList<Integer> classFileBytes, Fields field) {
+    private static void readMethodOrField(LinkedList<Integer> classFileBytes,ConstantPool constantPool, Fields field) {
         field.setAccessFlags(ClassReaderUtil.getU2(classFileBytes));
         field.setNameIndex(ClassReaderUtil.getU2(classFileBytes));
         field.setDescriptorIndex(ClassReaderUtil.getU2(classFileBytes));
         field.setAttributesCount(ClassReaderUtil.getU2(classFileBytes));
-        field.setAttributes(readAttributeInfo(classFileBytes, field.getAttributesCount().toInteger()));
+        field.setAttributes(readAttributeInfo(classFileBytes,constantPool, field.getAttributesCount().toInteger()));
     }
 
-    private static Attribute[] readAttributeInfo(LinkedList<Integer> classFileBytes, Integer length) {
+    private static Attribute[] readAttributeInfo(LinkedList<Integer> classFileBytes,ConstantPool constantPool, Integer length) {
         Attribute[] attributes = new Attribute[length];
-        // todo
+        for (int i = 0; i < length; i++) {
+            ClassFieldType.U2  attributeNameIndex = ClassReaderUtil.getU2(classFileBytes);
+            //获取属性名
+            String name = ConstantInfo.getUtf8(constantPool, attributeNameIndex.toInteger());
+            AttributeEnum attributeEnum = AttributeEnum.getAttributeEnum(name);
+            ClassFieldType.U4 attributeLength = ClassReaderUtil.getU4(classFileBytes);
+            AttributeInfo attributeInfo = attributeEnum.getAttributeInfo(classFileBytes, attributeLength);
+            //封装属性
+            Attribute attribute = new Attribute(attributeNameIndex, attributeLength, attributeInfo);
+            attributes[i] = attribute;
+        }
         return attributes;
     }
 
