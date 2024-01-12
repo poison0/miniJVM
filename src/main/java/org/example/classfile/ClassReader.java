@@ -39,6 +39,9 @@ public class ClassReader {
         return classFile;
     }
 
+    /**
+     * 读取接口
+     */
     private static Interface[] readInterfaces(LinkedList<Integer> classFileBytes, Integer length) {
         Interface[] interfaces = new Interface[length];
         for (int i = 0; i < length; i++) {
@@ -48,6 +51,9 @@ public class ClassReader {
         return interfaces;
     }
 
+    /**
+     * 读取常量池
+     */
     private static ConstantPool readConstantPool(LinkedList<Integer> classFileBytes, Integer length) {
         ConstantPool constantPool = new ConstantPool();
         //从1开始，因为第0个位置是空
