@@ -11,6 +11,8 @@ import org.example.util.ClassReaderUtil;
 
 import java.util.LinkedList;
 
+import static org.example.util.ClassReaderUtil.*;
+
 /**
  * @auth 牛顺顺
  * @date 2024/1/2
@@ -23,21 +25,21 @@ public class ClassReader {
     public static ClassFile analyzeClassFile(LinkedList<Integer> classFileBytes) {
         ClassFile classFile = new ClassFile();
         classFile.setMagic(readAndCheckMagic(classFileBytes));
-        classFile.setMinorVersion(ClassReaderUtil.getU2(classFileBytes));
+        classFile.setMinorVersion(getU2(classFileBytes));
         classFile.setMajorVersion(readAndCheckVersion(classFile.getMinorVersion(), classFileBytes));
-        classFile.setConstantPoolCount(ClassReaderUtil.getU2(classFileBytes));
+        classFile.setConstantPoolCount(getU2(classFileBytes));
         classFile.setConstantPool(readConstantPool(classFileBytes, classFile.getConstantPoolCount().toInteger()));
-        classFile.setAccessFlags(ClassReaderUtil.getU2(classFileBytes));
-        classFile.setThisClass(ClassReaderUtil.getU2(classFileBytes));
-        classFile.setSuperClass(ClassReaderUtil.getU2(classFileBytes));
-        classFile.setInterfacesCount(ClassReaderUtil.getU2(classFileBytes));
+        classFile.setAccessFlags(getU2(classFileBytes));
+        classFile.setThisClass(getU2(classFileBytes));
+        classFile.setSuperClass(getU2(classFileBytes));
+        classFile.setInterfacesCount(getU2(classFileBytes));
         classFile.setInterfaces(readInterfaces(classFileBytes, classFile.getInterfacesCount().toInteger()));
-        classFile.setFieldsCount(ClassReaderUtil.getU2(classFileBytes));
+        classFile.setFieldsCount(getU2(classFileBytes));
         classFile.setFields(readFields(classFileBytes,classFile.getConstantPool(), classFile.getFieldsCount().toInteger()));
-        classFile.setMethodsCount(ClassReaderUtil.getU2(classFileBytes));
+        classFile.setMethodsCount(getU2(classFileBytes));
         classFile.setMethods(readMethods(classFileBytes, classFile.getConstantPool(),classFile.getMethodsCount().toInteger()));
-        classFile.setAttributesCount(ClassReaderUtil.getU2(classFileBytes));
-        classFile.setAttributes(readAttributeInfo(classFileBytes, classFile.getConstantPool(),classFile.getAttributesCount().toInteger()));
+        classFile.setAttributesCount(getU2(classFileBytes));
+        classFile.setAttributes(readAttributes(classFileBytes, classFile.getConstantPool(),classFile.getAttributesCount().toInteger()));
         return classFile;
     }
 
@@ -48,7 +50,7 @@ public class ClassReader {
         Interface[] interfaces = new Interface[length];
         for (int i = 0; i < length; i++) {
             interfaces[i] = new Interface();
-            interfaces[i].setInterfaceIndex(ClassReaderUtil.getU2(classFileBytes));
+            interfaces[i].setInterfaceIndex(getU2(classFileBytes));
         }
         return interfaces;
     }
@@ -61,7 +63,7 @@ public class ClassReader {
         //从1开始，因为第0个位置是空
         ConstantInfo[] constantInfos = new ConstantInfo[length+1];
         for (int i = 1; i < length; i++) {
-            ClassFieldType.U1 tag = ClassReaderUtil.getU1(classFileBytes);
+            ClassFieldType.U1 tag = getU1(classFileBytes);
             ConstantInfoTagEnum tagEnum = ConstantInfoTagEnum.getConstantInfoTagEnum(tag.toInteger());
             constantInfos[i] = tagEnum.getConstantInfo(classFileBytes);
             //因为jvm开发时是处于32位机为主流的时代，所以为了向下兼容，double和long类型的常量占两个空间
@@ -92,22 +94,22 @@ public class ClassReader {
     }
 
     private static void readMethodOrField(LinkedList<Integer> classFileBytes,ConstantPool constantPool, Fields field) {
-        field.setAccessFlags(ClassReaderUtil.getU2(classFileBytes));
-        field.setNameIndex(ClassReaderUtil.getU2(classFileBytes));
-        field.setDescriptorIndex(ClassReaderUtil.getU2(classFileBytes));
-        field.setAttributesCount(ClassReaderUtil.getU2(classFileBytes));
-        field.setAttributes(readAttributeInfo(classFileBytes,constantPool, field.getAttributesCount().toInteger()));
+        field.setAccessFlags(getU2(classFileBytes));
+        field.setNameIndex(getU2(classFileBytes));
+        field.setDescriptorIndex(getU2(classFileBytes));
+        field.setAttributesCount(getU2(classFileBytes));
+        field.setAttributes(readAttributes(classFileBytes,constantPool, field.getAttributesCount().toInteger()));
     }
 
-    private static Attribute[] readAttributeInfo(LinkedList<Integer> classFileBytes,ConstantPool constantPool, Integer length) {
+    public static Attribute[] readAttributes(LinkedList<Integer> classFileBytes, ConstantPool constantPool, Integer length) {
         Attribute[] attributes = new Attribute[length];
         for (int i = 0; i < length; i++) {
-            ClassFieldType.U2  attributeNameIndex = ClassReaderUtil.getU2(classFileBytes);
+            ClassFieldType.U2  attributeNameIndex = getU2(classFileBytes);
             //获取属性名
             String name = ConstantInfo.getUtf8(constantPool, attributeNameIndex.toInteger());
             AttributeEnum attributeEnum = AttributeEnum.getAttributeEnum(name);
-            ClassFieldType.U4 attributeLength = ClassReaderUtil.getU4(classFileBytes);
-            AttributeInfo attributeInfo = attributeEnum.getAttributeInfo(classFileBytes, attributeLength);
+            ClassFieldType.U4 attributeLength = getU4(classFileBytes);
+            AttributeInfo attributeInfo = attributeEnum.getAttributeInfo(classFileBytes, attributeLength,constantPool);
             //封装属性
             Attribute attribute = new Attribute(attributeNameIndex, attributeLength, attributeInfo);
             attributes[i] = attribute;
@@ -116,7 +118,7 @@ public class ClassReader {
     }
 
     private static ClassFieldType.U4 readAndCheckMagic(LinkedList<Integer> classFileBytes) {
-        ClassFieldType.U4 magic = ClassReaderUtil.getU4(classFileBytes);
+        ClassFieldType.U4 magic = getU4(classFileBytes);
         if (!magic.toHex().equals("CA FE BA BE")) {
             throw new RuntimeException("java.lang.ClassFormatError: magic!");
         }
@@ -124,7 +126,7 @@ public class ClassReader {
     }
 
     private static ClassFieldType.U2 readAndCheckVersion(ClassFieldType.U2 minorVersion,LinkedList<Integer> classFileBytes) {
-        ClassFieldType.U2 majorVersion = ClassReaderUtil.getU2(classFileBytes);
+        ClassFieldType.U2 majorVersion = getU2(classFileBytes);
         if (majorVersion.toValue() == 45) {
             return majorVersion;
         }

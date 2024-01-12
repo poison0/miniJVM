@@ -2,6 +2,10 @@ package org.example;
 
 import org.example.classfile.ClassReader;
 import org.example.classfile.classfield.ClassFile;
+import org.example.classfile.classfield.Fields;
+import org.example.classfile.classfield.Methods;
+import org.example.classfile.classfield.constantpool.ConstantClassInfo;
+import org.example.classfile.classfield.constantpool.ConstantInfo;
 import org.example.classpath.ClassPath;
 
 import java.util.LinkedList;
@@ -32,14 +36,40 @@ public class Main {
             for (byte aByte : bytes) {
                 int unsignedInt = Byte.toUnsignedInt(aByte);
                 list.add(unsignedInt);
-                System.out.print(unsignedInt+" ");
+//                System.out.print(unsignedInt+" ");
             };
             // 解析class文件
             ClassFile classFile = ClassReader.analyzeClassFile(list);
-
-
+            print(classFile);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private static void print(ClassFile classFile) {
+        System.out.printf("version:%s.%s",classFile.getMajorVersion().toValue(), classFile.getMinorVersion().toValue());
+        System.out.println();
+        System.out.printf("constantPoolCount:%s",classFile.getConstantPoolCount().toValue());
+        System.out.println();
+        System.out.printf("accessFlags:%s",classFile.getAccessFlags().toHex());
+        System.out.println();
+        System.out.printf("thisClass:%s",classFile.getThisClass());
+        System.out.println();
+        System.out.printf("superClass:%s",classFile.getSuperClass());
+        System.out.println();
+        System.out.printf("interfacesCount:%s",classFile.getInterfacesCount().toValue());
+        System.out.println();
+        System.out.printf("fieldsCount:%s",classFile.getFieldsCount().toValue());
+        System.out.println();
+        for (Fields field : classFile.getFields()) {
+            System.out.printf("     %s", ConstantInfo.getUtf8(classFile.getConstantPool(),field.getNameIndex().toInteger()));
+            System.out.println();
+        }
+        System.out.printf("methodCount:%s",classFile.getMethodsCount().toValue());
+        System.out.println();
+        for (Methods method : classFile.getMethods()) {
+            System.out.printf("     %s", ConstantInfo.getUtf8(classFile.getConstantPool(),method.getNameIndex().toInteger()));
+            System.out.println();
         }
     }
 }

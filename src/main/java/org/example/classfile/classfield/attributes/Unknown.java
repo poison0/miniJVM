@@ -1,6 +1,7 @@
 package org.example.classfile.classfield.attributes;
 
 import org.example.classfile.ClassFieldType;
+import org.example.constant.AttributeEnum;
 
 /**
  * @auth nss
@@ -8,4 +9,8 @@ import org.example.classfile.ClassFieldType;
  */
 public record Unknown(ClassFieldType.CustomBytes customBytes) implements AttributeInfo {
 
+    @Override
+    public AttributeEnum getAttributeTag() {
+        return AttributeEnum.UNKNOWN;
+    }
 }

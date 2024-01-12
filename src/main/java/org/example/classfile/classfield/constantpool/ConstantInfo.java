@@ -16,8 +16,9 @@ public interface ConstantInfo {
      * @return 字符串
      */
     static String getUtf8(ConstantPool constantPool, int index){
-        if (constantPool.getConstantInfos()[index - 1].getTag().equals(ConstantInfoTagEnum.CONSTANT_Utf8_info)) {
-            return ((ConstantUtf8Info) constantPool.getConstantInfos()[index - 1]).bytes().toString();
+        ConstantInfoTagEnum tag = constantPool.getConstantInfos()[index].getTag();
+        if (tag.equals(ConstantInfoTagEnum.CONSTANT_Utf8_info)) {
+            return ((ConstantUtf8Info) constantPool.getConstantInfos()[index]).bytes().toString();
         } else {
             throw new RuntimeException("getUtf8Index is not CONSTANT_Utf8_info");
         }

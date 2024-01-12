@@ -5,11 +5,11 @@ import org.example.constant.AttributeEnum;
 
 /**
  * @auth nss
- * @date 2024/1/12
+ * @date 2024/1/13
  */
-public record ConstantValue(ClassFieldType.U2 constantValueIndex) implements AttributeInfo{
+public record Exceptions(ClassFieldType.U2 numberOfExceptions, ClassFieldType.U2[] exceptionIndexTable) implements AttributeInfo{
     @Override
     public AttributeEnum getAttributeTag() {
-        return AttributeEnum.CONSTANT_VALUE;
+        return AttributeEnum.EXCEPTIONS;
     }
 }

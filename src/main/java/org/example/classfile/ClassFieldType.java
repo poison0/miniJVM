@@ -18,6 +18,7 @@ public class ClassFieldType {
     protected String hexs;
     protected ClassFieldTypeEnum type;
 
+
     public ClassFieldType(Integer[] bytes, ClassFieldTypeEnum type) {
         this.bytes = bytes;
         this.type = type;
