@@ -7,6 +7,9 @@ import org.example.classfile.classfield.Methods;
 import org.example.classfile.classfield.constantpool.ConstantClassInfo;
 import org.example.classfile.classfield.constantpool.ConstantInfo;
 import org.example.classpath.ClassPath;
+import org.example.rtda.Frame;
+import org.example.rtda.LocalVars;
+import org.example.rtda.OperandStack;
 
 import java.util.LinkedList;
 
@@ -22,8 +25,46 @@ public class Main {
         } else if (cmd.isVersionFlag()) {
             System.out.println("version 1.0.0");
         } else {
-            startJVM(cmd);
+//            startJVM(cmd);
+            startJVM();
         }
+    }
+    private static void startJVM() {
+        Frame frame = new Frame(100, 100);
+        testLocalVars(frame.getLocalVars());
+        testOperandStack(frame.getOperandStack());
+    }
+    private static void testLocalVars(LocalVars vars) {
+        vars.setInt(0, 100);
+        vars.setInt(1, -100);
+        vars.setLong(2, 2997924580L);
+        vars.setLong(4, -2997924580L);
+        vars.setFloat(6, 3.1415926f);
+        vars.setDouble(7, 2.71828182845);
+        vars.setRef(9, null);
+        System.out.println(vars.getInt(0));
+        System.out.println(vars.getInt(1));
+        System.out.println(vars.getLong(2));
+        System.out.println(vars.getLong(4));
+        System.out.println(vars.getFloat(6));
+        System.out.println(vars.getDouble(7));
+        System.out.println(vars.getRef(9));
+    }
+    private static void testOperandStack(OperandStack stack) {
+        stack.pushInt(100);
+        stack.pushInt(-100);
+        stack.pushLong(2997924580L);
+        stack.pushLong(-2997924580L);
+        stack.pushFloat(3.1415926f);
+        stack.pushDouble(2.71828182845);
+        stack.pushRef(null);
+        System.out.println(stack.popRef());
+        System.out.println(stack.popDouble());
+        System.out.println(stack.popFloat());
+        System.out.println(stack.popLong());
+        System.out.println(stack.popLong());
+        System.out.println(stack.popInt());
+        System.out.println(stack.popInt());
     }
 
     private static void startJVM(Cmd cmd) {

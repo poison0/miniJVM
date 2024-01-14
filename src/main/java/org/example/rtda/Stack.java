@@ -1,0 +1,46 @@
+package org.example.rtda;
+
+import lombok.Data;
+
+/**
+ * @auth nss
+ * @date 2024/1/14
+ */
+@Data
+public class Stack {
+    private int maxSize;
+    private int size;
+    //栈顶元素
+    private Frame top;
+
+    public Stack(int maxSize) {
+        this.maxSize = maxSize;
+    }
+    public void push(Frame frame) {
+        if (size >= maxSize) {
+            throw new RuntimeException("java.lang.StackOverflowError");
+        }
+        if (top != null) {
+            frame.setLower(top);
+        }
+        top = frame;
+        size++;
+    }
+    public Frame pop() {
+        if (top == null) {
+            throw new RuntimeException("jvm stack is empty");
+        }
+        Frame temp = top;
+        top = top.getLower();
+        temp.setLower(null);
+        size--;
+        return temp;
+    }
+
+    public Frame top() {
+        if (top == null) {
+            throw new RuntimeException("jvm stack is empty");
+        }
+        return top;
+    }
+}

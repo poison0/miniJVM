@@ -7,7 +7,6 @@ import org.example.classfile.classfield.constantpool.ConstantInfo;
 import org.example.classfile.classfield.constantpool.ConstantPool;
 import org.example.constant.AttributeEnum;
 import org.example.constant.ConstantInfoTagEnum;
-import org.example.util.ClassReaderUtil;
 
 import java.util.LinkedList;
 
