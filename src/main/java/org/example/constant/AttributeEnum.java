@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.example.classfile.ClassFieldType;
 import org.example.classfile.ClassReader;
 import org.example.classfile.classfield.attributes.*;
+import org.example.classfile.classfield.attributes.Deprecated;
 import org.example.classfile.classfield.constantpool.ConstantInfo;
 import org.example.classfile.classfield.constantpool.ConstantPool;
 import org.example.util.ClassReaderUtil;
@@ -86,9 +87,30 @@ public enum AttributeEnum {
         }
     },
     //java 1.1
-    INNER_CLASSES("InnerClasses"),
-    SYNTHETIC("Synthetic"),
-    DEPRECATED("Deprecated"),
+    INNER_CLASSES("InnerClasses"){
+        @Override
+        public AttributeInfo getAttributeInfo(LinkedList<Integer> classFileBytes, ClassFieldType.U4 attributeLength, ConstantPool constantPool) {
+
+            ClassFieldType.U2 numberOfClasses = getU2(classFileBytes);
+            InnerClasses.InnerClassesInfo[] classes = new InnerClasses.InnerClassesInfo[numberOfClasses.toInteger()];
+            for (int i = 0; i < numberOfClasses.toInteger(); i++) {
+                classes[i] = new InnerClasses.InnerClassesInfo(getU2(classFileBytes), getU2(classFileBytes), getU2(classFileBytes), getU2(classFileBytes));
+            }
+            return new InnerClasses(numberOfClasses,classes);
+        }
+    },
+    SYNTHETIC("Synthetic"){
+        @Override
+        public AttributeInfo getAttributeInfo(LinkedList<Integer> classFileBytes, ClassFieldType.U4 attributeLength, ConstantPool constantPool) {
+            return new Synthetic();
+        }
+    },
+    DEPRECATED("Deprecated"){
+        @Override
+        public AttributeInfo getAttributeInfo(LinkedList<Integer> classFileBytes, ClassFieldType.U4 attributeLength, ConstantPool constantPool) {
+            return new Deprecated();
+        }
+    },
     //java 5.0
     ENCLOSING_METHOD("EnclosingMethod"),
     SIGNATURE("Signature"),
