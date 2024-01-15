@@ -3,11 +3,9 @@ package org.example.constant;
 import lombok.Getter;
 import org.example.classfile.ClassFieldType;
 import org.example.classfile.ClassReader;
-import org.example.classfile.classfield.attributes.*;
 import org.example.classfile.classfield.attributes.Deprecated;
-import org.example.classfile.classfield.constantpool.ConstantInfo;
+import org.example.classfile.classfield.attributes.*;
 import org.example.classfile.classfield.constantpool.ConstantPool;
-import org.example.util.ClassReaderUtil;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -15,6 +13,7 @@ import java.util.LinkedList;
 import static org.example.util.ClassReaderUtil.*;
 
 /**
+ * 属性表属性枚举
  * @auth nss
  * @date 2024/1/2
  */
@@ -112,7 +111,12 @@ public enum AttributeEnum {
         }
     },
     //java 5.0
-    ENCLOSING_METHOD("EnclosingMethod"),
+    ENCLOSING_METHOD("EnclosingMethod"){
+        @Override
+        public AttributeInfo getAttributeInfo(LinkedList<Integer> classFileBytes, ClassFieldType.U4 attributeLength, ConstantPool constantPool) {
+            return new EnclosingMethod(getU2(classFileBytes), getU2(classFileBytes));
+        }
+    },
     SIGNATURE("Signature"),
     SOURCE_DEBUG_EXTENSION("SourceDebugExtension"),
     LOCAL_VARIABLE_TYPE_TABLE("LocalVariableTypeTable"),

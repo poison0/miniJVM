@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
+ * 常量池常量类型枚举
  * @auth nss
  * @date 2024/1/3
  */
