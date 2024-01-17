@@ -11,12 +11,12 @@ public class Slot {
     //存放基本类型数据
     private int num;
     //存放引用类型
-    private Object ref;
+    private JObject ref;
 
     public Slot() {
     }
 
-    public Slot(int num, Object ref) {
+    public Slot(int num, JObject ref) {
         this.num = num;
         this.ref = ref;
     }

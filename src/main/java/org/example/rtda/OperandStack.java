@@ -68,14 +68,14 @@ public class OperandStack {
         return Double.longBitsToDouble(temp);
     }
     //放入一个引用类型
-    public void pushRef(Object ref) {
+    public void pushRef(JObject ref) {
         slots[size].setRef(ref);
         size++;
     }
     //取出一个引用类型
-    public Object popRef() {
+    public JObject popRef() {
         size--;
-        Object ref = slots[size].getRef();
+        JObject ref = slots[size].getRef();
         //使用jvm的gc帮助回收
         slots[size].setRef(null);
         return ref;

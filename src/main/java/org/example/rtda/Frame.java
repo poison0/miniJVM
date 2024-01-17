@@ -8,7 +8,7 @@ import lombok.Data;
  */
 @Data
 public class Frame {
-    //局部变量表指针
+    //局部变量表
     private LocalVars localVars;
     //操作数栈指针
     private OperandStack operandStack;

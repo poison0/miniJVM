@@ -58,10 +58,10 @@ public class LocalVars {
         return Double.longBitsToDouble(temp);
     }
     //存放引用类型数据
-    public void setRef(int index, Object ref) {
+    public void setRef(int index, JObject ref) {
         slots[index].setRef(ref);
     }
-    public Object getRef(int index) {
+    public JObject getRef(int index) {
         return slots[index].getRef();
     }
 }
