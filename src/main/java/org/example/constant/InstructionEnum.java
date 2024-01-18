@@ -5,6 +5,7 @@ import org.example.instructions.base.ByteCodeReader;
 import org.example.instructions.base.Instruction;
 import org.example.rtda.Frame;
 import org.example.rtda.JObject;
+import org.example.rtda.Slot;
 
 /**
  * 指令集
@@ -329,6 +330,820 @@ public enum InstructionEnum implements Instruction {
             frame.getOperandStack().pushFloat(val);
         }
     },
+    // 存储指令
+    L_STORE("lstore", 0x37){
+        @Override
+        public void fetchOperands(ByteCodeReader reader) {
+            this.index = reader.readInt8();
+        }
+        @Override
+        public void execute(Frame frame) {
+            long val = frame.getOperandStack().popLong();
+            frame.getLocalVars().setLong(this.index, val);
+        }
+        private int index;
+    },
+    L_STORE_0("lstore_0", 0x3f){
+        @Override
+        public void execute(Frame frame) {
+            long val = frame.getOperandStack().popLong();
+            frame.getLocalVars().setLong(0, val);
+        }
+    },
+    L_STORE_1("lstore_1", 0x40){
+        @Override
+        public void execute(Frame frame) {
+            long val = frame.getOperandStack().popLong();
+            frame.getLocalVars().setLong(1, val);
+        }
+    },
+    L_STORE_2("lstore_2", 0x41){
+        @Override
+        public void execute(Frame frame) {
+            long val = frame.getOperandStack().popLong();
+            frame.getLocalVars().setLong(2, val);
+        }
+    },
+    L_STORE_3("lstore_3", 0x42){
+        @Override
+        public void execute(Frame frame) {
+            long val = frame.getOperandStack().popLong();
+            frame.getLocalVars().setLong(3, val);
+        }
+    },
+    D_STORE("dstore", 0x39){
+        @Override
+        public void fetchOperands(ByteCodeReader reader) {
+            this.index = reader.readInt8();
+        }
+        @Override
+        public void execute(Frame frame) {
+            double val = frame.getOperandStack().popDouble();
+            frame.getLocalVars().setDouble(this.index, val);
+        }
+        private int index;
+    },
+    D_STORE_0("dstore_0", 0x47){
+        @Override
+        public void execute(Frame frame) {
+            double val = frame.getOperandStack().popDouble();
+            frame.getLocalVars().setDouble(0, val);
+        }
+    },
+    D_STORE_1("dstore_1", 0x48){
+        @Override
+        public void execute(Frame frame) {
+            double val = frame.getOperandStack().popDouble();
+            frame.getLocalVars().setDouble(1, val);
+        }
+    },
+    D_STORE_2("dstore_2", 0x49){
+        @Override
+        public void execute(Frame frame) {
+            double val = frame.getOperandStack().popDouble();
+            frame.getLocalVars().setDouble(2, val);
+        }
+    },
+    D_STORE_3("dstore_3", 0x4a){
+        @Override
+        public void execute(Frame frame) {
+            double val = frame.getOperandStack().popDouble();
+            frame.getLocalVars().setDouble(3, val);
+        }
+    },
+    A_STORE("astore", 0x3a){
+        @Override
+        public void fetchOperands(ByteCodeReader reader) {
+            this.index = reader.readInt8();
+        }
+        @Override
+        public void execute(Frame frame) {
+            JObject ref = frame.getOperandStack().popRef();
+            frame.getLocalVars().setRef(this.index, ref);
+        }
+        private int index;
+    },
+    A_STORE_0("astore_0", 0x4b){
+        @Override
+        public void execute(Frame frame) {
+            JObject ref = frame.getOperandStack().popRef();
+            frame.getLocalVars().setRef(0, ref);
+        }
+    },
+    A_STORE_1("astore_1", 0x4c){
+        @Override
+        public void execute(Frame frame) {
+            JObject ref = frame.getOperandStack().popRef();
+            frame.getLocalVars().setRef(1, ref);
+        }
+    },
+    A_STORE_2("astore_2", 0x4d){
+        @Override
+        public void execute(Frame frame) {
+            JObject ref = frame.getOperandStack().popRef();
+            frame.getLocalVars().setRef(2, ref);
+        }
+    },
+    A_STORE_3("astore_3", 0x4e){
+        @Override
+        public void execute(Frame frame) {
+            JObject ref = frame.getOperandStack().popRef();
+            frame.getLocalVars().setRef(3, ref);
+        }
+    },
+    I_STORE("istore", 0x36){
+        @Override
+        public void fetchOperands(ByteCodeReader reader) {
+            this.index = reader.readInt8();
+        }
+        @Override
+        public void execute(Frame frame) {
+            int val = frame.getOperandStack().popInt();
+            frame.getLocalVars().setInt(this.index, val);
+        }
+        private int index;
+    },
+    I_STORE_0("istore_0", 0x3b){
+        @Override
+        public void execute(Frame frame) {
+            int val = frame.getOperandStack().popInt();
+            frame.getLocalVars().setInt(0, val);
+        }
+    },
+    I_STORE_1("istore_1", 0x3c){
+        @Override
+        public void execute(Frame frame) {
+            int val = frame.getOperandStack().popInt();
+            frame.getLocalVars().setInt(1, val);
+        }
+    },
+    I_STORE_2("istore_2", 0x3d){
+        @Override
+        public void execute(Frame frame) {
+            int val = frame.getOperandStack().popInt();
+            frame.getLocalVars().setInt(2, val);
+        }
+    },
+    I_STORE_3("istore_3", 0x3e){
+        @Override
+        public void execute(Frame frame) {
+            int val = frame.getOperandStack().popInt();
+            frame.getLocalVars().setInt(3, val);
+        }
+    },
+    F_STORE("fstore", 0x38){
+        @Override
+        public void fetchOperands(ByteCodeReader reader) {
+            this.index = reader.readInt8();
+        }
+        @Override
+        public void execute(Frame frame) {
+            float val = frame.getOperandStack().popFloat();
+            frame.getLocalVars().setFloat(this.index, val);
+        }
+        private int index;
+    },
+    F_STORE_0("fstore_0", 0x43){
+        @Override
+        public void execute(Frame frame) {
+            float val = frame.getOperandStack().popFloat();
+            frame.getLocalVars().setFloat(0, val);
+        }
+    },
+    F_STORE_1("fstore_1", 0x44){
+        @Override
+        public void execute(Frame frame) {
+            float val = frame.getOperandStack().popFloat();
+            frame.getLocalVars().setFloat(1, val);
+        }
+    },
+    F_STORE_2("fstore_2", 0x45){
+        @Override
+        public void execute(Frame frame) {
+            float val = frame.getOperandStack().popFloat();
+            frame.getLocalVars().setFloat(2, val);
+        }
+    },
+    F_STORE_3("fstore_3", 0x46){
+        @Override
+        public void execute(Frame frame) {
+            float val = frame.getOperandStack().popFloat();
+            frame.getLocalVars().setFloat(3, val);
+        }
+    },
+    // 出栈指令
+    POP("pop", 0x57){
+        @Override
+        public void execute(Frame frame) {
+            frame.getOperandStack().popSlot();
+        }
+    },
+    POP2("pop2", 0x58){
+        @Override
+        public void execute(Frame frame) {
+            frame.getOperandStack().popSlot();
+            frame.getOperandStack().popSlot();
+        }
+    },
+    // 复制栈顶指令
+    DUP("dup", 0x59){
+        @Override
+        public void execute(Frame frame) {
+            Slot slot = frame.getOperandStack().popSlot();
+            frame.getOperandStack().pushSlot(slot);
+            frame.getOperandStack().pushSlot(slot);
+        }
+    },
+    DUP_X1("dup_x1", 0x5a){
+        @Override
+        public void execute(Frame frame) {
+            Slot slot1 = frame.getOperandStack().popSlot();
+            Slot slot2 = frame.getOperandStack().popSlot();
+            frame.getOperandStack().pushSlot(slot1);
+            frame.getOperandStack().pushSlot(slot2);
+            frame.getOperandStack().pushSlot(slot1);
+        }
+    },
+    DUP_X2("dup_x2", 0x5b){
+        @Override
+        public void execute(Frame frame) {
+            Slot slot1 = frame.getOperandStack().popSlot();
+            Slot slot2 = frame.getOperandStack().popSlot();
+            Slot slot3 = frame.getOperandStack().popSlot();
+            frame.getOperandStack().pushSlot(slot1);
+            frame.getOperandStack().pushSlot(slot3);
+            frame.getOperandStack().pushSlot(slot2);
+            frame.getOperandStack().pushSlot(slot1);
+        }
+    },
+    DUP2("dup2", 0x5c){
+        @Override
+        public void execute(Frame frame) {
+            Slot slot1 = frame.getOperandStack().popSlot();
+            Slot slot2 = frame.getOperandStack().popSlot();
+            frame.getOperandStack().pushSlot(slot2);
+            frame.getOperandStack().pushSlot(slot1);
+            frame.getOperandStack().pushSlot(slot2);
+            frame.getOperandStack().pushSlot(slot1);
+        }
+    },
+    DUP2_X1("dup2_x1", 0x5d){
+        @Override
+        public void execute(Frame frame) {
+            Slot slot1 = frame.getOperandStack().popSlot();
+            Slot slot2 = frame.getOperandStack().popSlot();
+            Slot slot3 = frame.getOperandStack().popSlot();
+            frame.getOperandStack().pushSlot(slot2);
+            frame.getOperandStack().pushSlot(slot1);
+            frame.getOperandStack().pushSlot(slot3);
+            frame.getOperandStack().pushSlot(slot2);
+            frame.getOperandStack().pushSlot(slot1);
+        }
+    },
+    DUP2_X2("dup2_x2", 0x5e){
+        @Override
+        public void execute(Frame frame) {
+            Slot slot1 = frame.getOperandStack().popSlot();
+            Slot slot2 = frame.getOperandStack().popSlot();
+            Slot slot3 = frame.getOperandStack().popSlot();
+            Slot slot4 = frame.getOperandStack().popSlot();
+            frame.getOperandStack().pushSlot(slot2);
+            frame.getOperandStack().pushSlot(slot1);
+            frame.getOperandStack().pushSlot(slot4);
+            frame.getOperandStack().pushSlot(slot3);
+            frame.getOperandStack().pushSlot(slot2);
+            frame.getOperandStack().pushSlot(slot1);
+        }
+    },
+    // 交换栈顶指令
+    SWAP("swap", 0x5f){
+        @Override
+        public void execute(Frame frame) {
+            Slot slot1 = frame.getOperandStack().popSlot();
+            Slot slot2 = frame.getOperandStack().popSlot();
+            frame.getOperandStack().pushSlot(slot1);
+            frame.getOperandStack().pushSlot(slot2);
+        }
+    },
+    // 数学指令
+    I_ADD("iadd", 0x60){
+        @Override
+        public void execute(Frame frame) {
+            int val1 = frame.getOperandStack().popInt();
+            int val2 = frame.getOperandStack().popInt();
+            int res = val1 + val2;
+            frame.getOperandStack().pushInt(res);
+        }
+    },
+    L_ADD("ladd", 0x61){
+        @Override
+        public void execute(Frame frame) {
+            long val1 = frame.getOperandStack().popLong();
+            long val2 = frame.getOperandStack().popLong();
+            long res = val1 + val2;
+            frame.getOperandStack().pushLong(res);
+        }
+    },
+    F_ADD("fadd", 0x62){
+        @Override
+        public void execute(Frame frame) {
+            float val1 = frame.getOperandStack().popFloat();
+            float val2 = frame.getOperandStack().popFloat();
+            float res = val1 + val2;
+            frame.getOperandStack().pushFloat(res);
+        }
+    },
+    D_ADD("dadd", 0x63){
+        @Override
+        public void execute(Frame frame) {
+            double val1 = frame.getOperandStack().popDouble();
+            double val2 = frame.getOperandStack().popDouble();
+            double res = val1 + val2;
+            frame.getOperandStack().pushDouble(res);
+        }
+    },
+    I_SUB("isub", 0x64){
+        @Override
+        public void execute(Frame frame) {
+            int val1 = frame.getOperandStack().popInt();
+            int val2 = frame.getOperandStack().popInt();
+            int res = val2 - val1;
+            frame.getOperandStack().pushInt(res);
+        }
+    },
+    L_SUB("lsub", 0x65){
+        @Override
+        public void execute(Frame frame) {
+            long val1 = frame.getOperandStack().popLong();
+            long val2 = frame.getOperandStack().popLong();
+            long res = val2 - val1;
+            frame.getOperandStack().pushLong(res);
+        }
+    },
+    F_SUB("fsub", 0x66){
+        @Override
+        public void execute(Frame frame) {
+            float val1 = frame.getOperandStack().popFloat();
+            float val2 = frame.getOperandStack().popFloat();
+            float res = val2 - val1;
+            frame.getOperandStack().pushFloat(res);
+        }
+    },
+    D_SUB("dsub", 0x67){
+        @Override
+        public void execute(Frame frame) {
+            double val1 = frame.getOperandStack().popDouble();
+            double val2 = frame.getOperandStack().popDouble();
+            double res = val2 - val1;
+            frame.getOperandStack().pushDouble(res);
+        }
+    },
+    I_MUL("imul", 0x68){
+        @Override
+        public void execute(Frame frame) {
+            int val1 = frame.getOperandStack().popInt();
+            int val2 = frame.getOperandStack().popInt();
+            int res = val1 * val2;
+            frame.getOperandStack().pushInt(res);
+        }
+    },
+    L_MUL("lmul", 0x69){
+        @Override
+        public void execute(Frame frame) {
+            long val1 = frame.getOperandStack().popLong();
+            long val2 = frame.getOperandStack().popLong();
+            long res = val1 * val2;
+            frame.getOperandStack().pushLong(res);
+        }
+    },
+    F_MUL("fmul", 0x6a){
+        @Override
+        public void execute(Frame frame) {
+            float val1 = frame.getOperandStack().popFloat();
+            float val2 = frame.getOperandStack().popFloat();
+            float res = val1 * val2;
+            frame.getOperandStack().pushFloat(res);
+        }
+    },
+    D_MUL("dmul", 0x6b){
+        @Override
+        public void execute(Frame frame) {
+            double val1 = frame.getOperandStack().popDouble();
+            double val2 = frame.getOperandStack().popDouble();
+            double res = val1 * val2;
+            frame.getOperandStack().pushDouble(res);
+        }
+    },
+    I_DIV("idiv", 0x6c){
+        @Override
+        public void execute(Frame frame) {
+            int val1 = frame.getOperandStack().popInt();
+            int val2 = frame.getOperandStack().popInt();
+            int res = val2 / val1;
+            frame.getOperandStack().pushInt(res);
+        }
+    },
+    L_DIV("ldiv", 0x6d){
+        @Override
+        public void execute(Frame frame) {
+            long val1 = frame.getOperandStack().popLong();
+            long val2 = frame.getOperandStack().popLong();
+            long res = val2 / val1;
+            frame.getOperandStack().pushLong(res);
+        }
+    },
+    F_DIV("fdiv", 0x6e){
+        @Override
+        public void execute(Frame frame) {
+            float val1 = frame.getOperandStack().popFloat();
+            float val2 = frame.getOperandStack().popFloat();
+            float res = val2 / val1;
+            frame.getOperandStack().pushFloat(res);
+        }
+    },
+    D_DIV("ddiv", 0x6f){
+        @Override
+        public void execute(Frame frame) {
+            double val1 = frame.getOperandStack().popDouble();
+            double val2 = frame.getOperandStack().popDouble();
+            double res = val2 / val1;
+            frame.getOperandStack().pushDouble(res);
+        }
+    },
+    I_REM("irem", 0x70){
+        @Override
+        public void execute(Frame frame) {
+            int val1 = frame.getOperandStack().popInt();
+            int val2 = frame.getOperandStack().popInt();
+            int res = val2 % val1;
+            frame.getOperandStack().pushInt(res);
+        }
+    },
+    L_REM("lrem", 0x71){
+        @Override
+        public void execute(Frame frame) {
+            long val1 = frame.getOperandStack().popLong();
+            long val2 = frame.getOperandStack().popLong();
+            long res = val2 % val1;
+            frame.getOperandStack().pushLong(res);
+        }
+    },
+    F_REM("frem", 0x72){
+        @Override
+        public void execute(Frame frame) {
+            float val1 = frame.getOperandStack().popFloat();
+            float val2 = frame.getOperandStack().popFloat();
+            float res = val2 % val1;
+            frame.getOperandStack().pushFloat(res);
+        }
+    },
+    D_REM("drem", 0x73){
+        @Override
+        public void execute(Frame frame) {
+            double val1 = frame.getOperandStack().popDouble();
+            double val2 = frame.getOperandStack().popDouble();
+            double res = val2 % val1;
+            frame.getOperandStack().pushDouble(res);
+        }
+    },
+    I_NEG("ineg", 0x74){
+        @Override
+        public void execute(Frame frame) {
+            int val = frame.getOperandStack().popInt();
+            frame.getOperandStack().pushInt(-val);
+        }
+    },
+    L_NEG("lneg", 0x75){
+        @Override
+        public void execute(Frame frame) {
+            long val = frame.getOperandStack().popLong();
+            frame.getOperandStack().pushLong(-val);
+        }
+    },
+    F_NEG("fneg", 0x76){
+        @Override
+        public void execute(Frame frame) {
+            float val = frame.getOperandStack().popFloat();
+            frame.getOperandStack().pushFloat(-val);
+        }
+    },
+    D_NEG("dneg", 0x77){
+        @Override
+        public void execute(Frame frame) {
+            double val = frame.getOperandStack().popDouble();
+            frame.getOperandStack().pushDouble(-val);
+        }
+    },
+    I_SHL("ishl", 0x78){
+        @Override
+        public void execute(Frame frame) {
+            int val1 = frame.getOperandStack().popInt();
+            int val2 = frame.getOperandStack().popInt();
+            int res = val2 << val1;
+            frame.getOperandStack().pushInt(res);
+        }
+    },
+    L_SHL("lshl", 0x79){
+        @Override
+        public void execute(Frame frame) {
+            int val1 = frame.getOperandStack().popInt();
+            long val2 = frame.getOperandStack().popLong();
+            long res = val2 << val1;
+            frame.getOperandStack().pushLong(res);
+        }
+    },
+    I_SHR("ishr", 0x7a){
+        @Override
+        public void execute(Frame frame) {
+            int val1 = frame.getOperandStack().popInt();
+            int val2 = frame.getOperandStack().popInt();
+            int res = val2 >> val1;
+            frame.getOperandStack().pushInt(res);
+        }
+    },
+    L_SHR("lshr", 0x7b){
+        @Override
+        public void execute(Frame frame) {
+            int val1 = frame.getOperandStack().popInt();
+            long val2 = frame.getOperandStack().popLong();
+            long res = val2 >> val1;
+            frame.getOperandStack().pushLong(res);
+        }
+    },
+    I_USHR("iushr", 0x7c){
+        @Override
+        public void execute(Frame frame) {
+            int val1 = frame.getOperandStack().popInt();
+            int val2 = frame.getOperandStack().popInt();
+            int res = val2 >>> val1;
+            frame.getOperandStack().pushInt(res);
+        }
+    },
+    L_USHR("lushr", 0x7d){
+        @Override
+        public void execute(Frame frame) {
+            int val1 = frame.getOperandStack().popInt();
+            long val2 = frame.getOperandStack().popLong();
+            long res = val2 >>> val1;
+            frame.getOperandStack().pushLong(res);
+        }
+    },
+    I_AND("iand", 0x7e){
+        @Override
+        public void execute(Frame frame) {
+            int val1 = frame.getOperandStack().popInt();
+            int val2 = frame.getOperandStack().popInt();
+            int res = val2 & val1;
+            frame.getOperandStack().pushInt(res);
+        }
+    },
+    L_AND("land", 0x7f){
+        @Override
+        public void execute(Frame frame) {
+            long val1 = frame.getOperandStack().popLong();
+            long val2 = frame.getOperandStack().popLong();
+            long res = val2 & val1;
+            frame.getOperandStack().pushLong(res);
+        }
+    },
+    I_OR("ior", 0x80){
+        @Override
+        public void execute(Frame frame) {
+            int val1 = frame.getOperandStack().popInt();
+            int val2 = frame.getOperandStack().popInt();
+            int res = val2 | val1;
+            frame.getOperandStack().pushInt(res);
+        }
+    },
+    L_OR("lor", 0x81){
+        @Override
+        public void execute(Frame frame) {
+            long val1 = frame.getOperandStack().popLong();
+            long val2 = frame.getOperandStack().popLong();
+            long res = val2 | val1;
+            frame.getOperandStack().pushLong(res);
+        }
+    },
+    I_XOR("ixor", 0x82){
+        @Override
+        public void execute(Frame frame) {
+            int val1 = frame.getOperandStack().popInt();
+            int val2 = frame.getOperandStack().popInt();
+            int res = val2 ^ val1;
+            frame.getOperandStack().pushInt(res);
+        }
+    },
+    L_XOR("lxor", 0x83){
+        @Override
+        public void execute(Frame frame) {
+            long val1 = frame.getOperandStack().popLong();
+            long val2 = frame.getOperandStack().popLong();
+            long res = val2 ^ val1;
+            frame.getOperandStack().pushLong(res);
+        }
+    },
+    I_INC("iinc", 0x84){
+        @Override
+        public void fetchOperands(ByteCodeReader reader) {
+            this.index = reader.readInt8();
+            this.constVal = reader.readInt8();
+        }
+        @Override
+        public void execute(Frame frame) {
+            int val = frame.getLocalVars().getInt(this.index);
+            val += this.constVal;
+            frame.getLocalVars().setInt(this.index, val);
+        }
+        private int index;
+        private int constVal;
+    },
+    // 类型转换指令
+    I2L("i2l", 0x85){
+        @Override
+        public void execute(Frame frame) {
+            int val = frame.getOperandStack().popInt();
+            frame.getOperandStack().pushLong(val);
+        }
+    },
+    I2F("i2f", 0x86){
+        @Override
+        public void execute(Frame frame) {
+            int val = frame.getOperandStack().popInt();
+            frame.getOperandStack().pushFloat((float)val);
+        }
+    },
+    I2D("i2d", 0x87){
+        @Override
+        public void execute(Frame frame) {
+            int val = frame.getOperandStack().popInt();
+            frame.getOperandStack().pushDouble(val);
+        }
+    },
+    L2I("l2i", 0x88){
+        @Override
+        public void execute(Frame frame) {
+            long val = frame.getOperandStack().popLong();
+            frame.getOperandStack().pushInt((int)val);
+        }
+    },
+    L2F("l2f", 0x89){
+        @Override
+        public void execute(Frame frame) {
+            long val = frame.getOperandStack().popLong();
+            frame.getOperandStack().pushFloat((float)val);
+        }
+    },
+    L2D("l2d", 0x8a){
+        @Override
+        public void execute(Frame frame) {
+            long val = frame.getOperandStack().popLong();
+            frame.getOperandStack().pushDouble(val);
+        }
+    },
+    F2I("f2i", 0x8b){
+        @Override
+        public void execute(Frame frame) {
+            float val = frame.getOperandStack().popFloat();
+            frame.getOperandStack().pushInt((int)val);
+        }
+    },
+    F2L("f2l", 0x8c){
+        @Override
+        public void execute(Frame frame) {
+            float val = frame.getOperandStack().popFloat();
+            frame.getOperandStack().pushLong((long)val);
+        }
+    },
+    F2D("f2d", 0x8d){
+        @Override
+        public void execute(Frame frame) {
+            float val = frame.getOperandStack().popFloat();
+            frame.getOperandStack().pushDouble(val);
+        }
+    },
+    D2I("d2i", 0x8e){
+        @Override
+        public void execute(Frame frame) {
+            double val = frame.getOperandStack().popDouble();
+            frame.getOperandStack().pushInt((int)val);
+        }
+    },
+    D2L("d2l", 0x8f){
+        @Override
+        public void execute(Frame frame) {
+            double val = frame.getOperandStack().popDouble();
+            frame.getOperandStack().pushLong((long)val);
+        }
+    },
+    D2F("d2f", 0x90){
+        @Override
+        public void execute(Frame frame) {
+            double val = frame.getOperandStack().popDouble();
+            frame.getOperandStack().pushFloat((float)val);
+        }
+    },
+    I2B("i2b", 0x91){
+        @Override
+        public void execute(Frame frame) {
+            int val = frame.getOperandStack().popInt();
+            frame.getOperandStack().pushInt((byte)val);
+        }
+    },
+    I2C("i2c", 0x92){
+        @Override
+        public void execute(Frame frame) {
+            int val = frame.getOperandStack().popInt();
+            frame.getOperandStack().pushInt((char)val);
+        }
+    },
+    I2S("i2s", 0x93){
+        @Override
+        public void execute(Frame frame) {
+            int val = frame.getOperandStack().popInt();
+            frame.getOperandStack().pushInt((short)val);
+        }
+    },
+    // 比较指令
+    L_CMP("lcmp", 0x94){
+        @Override
+        public void execute(Frame frame) {
+            long val1 = frame.getOperandStack().popLong();
+            long val2 = frame.getOperandStack().popLong();
+            if(val1 > val2){
+                frame.getOperandStack().pushInt(1);
+            }else if(val1 == val2){
+                frame.getOperandStack().pushInt(0);
+            }else{
+                frame.getOperandStack().pushInt(-1);
+            }
+        }
+    },
+    F_CMPL("fcmpl", 0x95){
+        @Override
+        public void execute(Frame frame) {
+            float val1 = frame.getOperandStack().popFloat();
+            float val2 = frame.getOperandStack().popFloat();
+            if(val1 > val2){
+                frame.getOperandStack().pushInt(1);
+            }else if(val1 == val2){
+                frame.getOperandStack().pushInt(0);
+            }else if(val1 < val2){
+                frame.getOperandStack().pushInt(-1);
+            }else{
+                frame.getOperandStack().pushInt(-1);
+            }
+        }
+    },
+    F_CMPG("fcmpg", 0x96){
+        @Override
+        public void execute(Frame frame) {
+            float val1 = frame.getOperandStack().popFloat();
+            float val2 = frame.getOperandStack().popFloat();
+            if(val1 > val2){
+                frame.getOperandStack().pushInt(1);
+            }else if(val1 == val2){
+                frame.getOperandStack().pushInt(0);
+            }else if(val1 < val2){
+                frame.getOperandStack().pushInt(-1);
+            }else{
+                frame.getOperandStack().pushInt(1);
+            }
+        }
+    },
+    D_CMPL("dcmpl", 0x97){
+        @Override
+        public void execute(Frame frame) {
+            double val1 = frame.getOperandStack().popDouble();
+            double val2 = frame.getOperandStack().popDouble();
+            if(val1 > val2){
+                frame.getOperandStack().pushInt(1);
+            }else if(val1 == val2){
+                frame.getOperandStack().pushInt(0);
+            }else if(val1 < val2){
+                frame.getOperandStack().pushInt(-1);
+            }else{
+                frame.getOperandStack().pushInt(-1);
+            }
+        }
+    },
+    D_CMPG("dcmpg", 0x98){
+        @Override
+        public void execute(Frame frame) {
+            double val1 = frame.getOperandStack().popDouble();
+            double val2 = frame.getOperandStack().popDouble();
+            if(val1 > val2){
+                frame.getOperandStack().pushInt(1);
+            }else if(val1 == val2){
+                frame.getOperandStack().pushInt(0);
+            }else if(val1 < val2){
+                frame.getOperandStack().pushInt(-1);
+            }else{
+                frame.getOperandStack().pushInt(1);
+            }
+        }
+    },
+
+
 
     ;
     // 助记符
