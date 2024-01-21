@@ -14,9 +14,14 @@ public class Frame {
     private OperandStack operandStack;
     //下一个栈帧指针
     private Frame lower;
+    //所属线程
+    private Thread thread;
+    //pc寄存器
+    private int nextPC;
 
-    public Frame(int maxLocals, int maxStack) {
+    public Frame(Thread thread,int maxLocals, int maxStack) {
         this.localVars = new LocalVars(maxLocals);
         this.operandStack = new OperandStack(maxStack);
+        this.thread = thread;
     }
 }

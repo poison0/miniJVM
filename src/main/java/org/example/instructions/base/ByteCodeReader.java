@@ -112,5 +112,10 @@ public class ByteCodeReader {
         }
         return ints;
     }
+    public void skipPadding() {
+        while (pc % 4 != 0) {
+            readUint8();
+        }
+    }
 
 }

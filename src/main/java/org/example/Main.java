@@ -30,7 +30,7 @@ public class Main {
         }
     }
     private static void startJVM() {
-        Frame frame = new Frame(100, 100);
+        Frame frame = new Frame(null,100, 100);
         testLocalVars(frame.getLocalVars());
         testOperandStack(frame.getOperandStack());
     }

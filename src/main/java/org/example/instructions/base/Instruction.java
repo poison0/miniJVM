@@ -12,4 +12,9 @@ public interface Instruction {
     //执行指令逻辑
     void execute(Frame frame);
 
+    static void branch(Frame frame, int offset) {
+        int pc = frame.getThread().getPc();
+        int nextPC = pc + offset;
+        frame.setNextPC(nextPC);
+    }
 }
