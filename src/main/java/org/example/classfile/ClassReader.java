@@ -74,25 +74,25 @@ public class ClassReader {
         return constantPool;
     }
 
-    private static Fields[] readFields(LinkedList<Integer> classFileBytes,ConstantPool constantPool, Integer length) {
-        Fields[] fields = new Fields[length];
+    private static Field[] readFields(LinkedList<Integer> classFileBytes, ConstantPool constantPool, Integer length) {
+        Field[] fields = new Field[length];
         for (int i = 0; i < length; i++) {
-            fields[i] = new Fields();
+            fields[i] = new Field();
             readMethodOrField(classFileBytes,constantPool, fields[i]);
         }
         return fields;
     }
 
-    private static Methods[] readMethods(LinkedList<Integer> classFileBytes,ConstantPool constantPool, Integer length) {
-        Methods[] method = new Methods[length];
+    private static Method[] readMethods(LinkedList<Integer> classFileBytes, ConstantPool constantPool, Integer length) {
+        Method[] method = new Method[length];
         for (int i = 0; i < length; i++) {
-            method[i] = new Methods();
+            method[i] = new Method();
             readMethodOrField(classFileBytes,constantPool, method[i]);
         }
         return method;
     }
 
-    private static void readMethodOrField(LinkedList<Integer> classFileBytes,ConstantPool constantPool, Fields field) {
+    private static void readMethodOrField(LinkedList<Integer> classFileBytes,ConstantPool constantPool, Field field) {
         field.setAccessFlags(getU2(classFileBytes));
         field.setNameIndex(getU2(classFileBytes));
         field.setDescriptorIndex(getU2(classFileBytes));

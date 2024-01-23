@@ -2,12 +2,11 @@ package org.example;
 
 import org.example.classfile.ClassReader;
 import org.example.classfile.classfield.ClassFile;
-import org.example.classfile.classfield.Fields;
-import org.example.classfile.classfield.Methods;
-import org.example.classfile.classfield.constantpool.ConstantClassInfo;
+import org.example.classfile.classfield.Field;
+import org.example.classfile.classfield.Method;
 import org.example.classfile.classfield.constantpool.ConstantInfo;
 import org.example.classpath.ClassPath;
-import org.example.rtda.Frame;
+import org.example.rtda.JFrame;
 import org.example.rtda.LocalVars;
 import org.example.rtda.OperandStack;
 
@@ -25,12 +24,12 @@ public class Main {
         } else if (cmd.isVersionFlag()) {
             System.out.println("version 1.0.0");
         } else {
-//            startJVM(cmd);
-            startJVM();
+            startJVM(cmd);
+//            startJVM();
         }
     }
     private static void startJVM() {
-        Frame frame = new Frame(null,100, 100);
+        JFrame frame = new JFrame(null,100, 100);
         testLocalVars(frame.getLocalVars());
         testOperandStack(frame.getOperandStack());
     }
@@ -81,10 +80,30 @@ public class Main {
             };
             // 解析class文件
             ClassFile classFile = ClassReader.analyzeClassFile(list);
-            print(classFile);
+            Method mainMethod = getMainMethod(classFile);
+            if (mainMethod == null) {
+                System.out.println("Main method not found in class " + cmd.getClassName());
+                return;
+            }
+            Interpreter interpreter = new Interpreter();
+            interpreter.interpret(mainMethod);
+
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static Method getMainMethod(ClassFile classFile) {
+        Method[] methods = classFile.getMethods();
+        for (Method method : methods) {
+            String name = ConstantInfo.getUtf8(classFile.getConstantPool(), method.getNameIndex().toInteger());
+            String descriptor = ConstantInfo.getUtf8(classFile.getConstantPool(), method.getDescriptorIndex().toInteger());
+            if ("main".equals(name) && "([Ljava/lang/String;)V".equals(descriptor)) {
+                return method;
+            }
+        }
+        return null;
     }
 
     private static void print(ClassFile classFile) {
@@ -102,13 +121,13 @@ public class Main {
         System.out.println();
         System.out.printf("fieldsCount:%s",classFile.getFieldsCount().toValue());
         System.out.println();
-        for (Fields field : classFile.getFields()) {
+        for (Field field : classFile.getFields()) {
             System.out.printf("     %s", ConstantInfo.getUtf8(classFile.getConstantPool(),field.getNameIndex().toInteger()));
             System.out.println();
         }
         System.out.printf("methodCount:%s",classFile.getMethodsCount().toValue());
         System.out.println();
-        for (Methods method : classFile.getMethods()) {
+        for (Method method : classFile.getMethods()) {
             System.out.printf("     %s", ConstantInfo.getUtf8(classFile.getConstantPool(),method.getNameIndex().toInteger()));
             System.out.println();
         }

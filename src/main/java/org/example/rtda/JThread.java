@@ -7,22 +7,22 @@ import lombok.Data;
  * @date 2024/1/14
  */
 @Data
-public class Thread {
+public class JThread {
     //pc寄存器
     private int pc;
     //虚拟机栈
     private Stack stack;
 
-    public Thread() {
+    public JThread() {
         this.stack = new Stack(1024);
     }
-    public void pushFrame(Frame frame) {
+    public void pushFrame(JFrame frame) {
         this.stack.push(frame);
     }
-    public Frame popFrame() {
+    public JFrame popFrame() {
         return this.stack.pop();
     }
-    public Frame currentFrame() {
+    public JFrame currentFrame() {
         return this.stack.top();
     }
 

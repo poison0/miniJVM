@@ -12,6 +12,9 @@ public class ByteCodeReader {
     private Integer[] code;
     private int pc;
 
+    public ByteCodeReader() {
+    }
+
     public ByteCodeReader(Integer[] code, int pc) {
         this.code = code;
         this.pc = pc;

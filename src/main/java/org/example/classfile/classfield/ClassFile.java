@@ -58,7 +58,7 @@ public class ClassFile {
     /**
      * 字段表
      */
-    private Fields[] fields;
+    private Field[] fields;
     /**
      * 方法计数器
      */
@@ -66,7 +66,7 @@ public class ClassFile {
     /**
      * 方法表
      */
-    private Methods[] methods;
+    private Method[] methods;
     /**
      * 属性计数器
      */
