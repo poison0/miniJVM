@@ -44,19 +44,22 @@ public class Interpreter {
     }
     public void loop(JThread thread,ClassFieldType.CustomBytes code) {
         JFrame frame = thread.popFrame();
-        ByteCodeReader reader = new ByteCodeReader();
+        byte[] codeBytes = new byte[code.getBytes().length];
+        for (int i = 0; i < code.getBytes().length; i++) {
+            codeBytes[i] = code.getBytes()[i].byteValue();
+        }
+        ByteCodeReader reader = new ByteCodeReader(codeBytes,frame.getNextPC());
         try{
-            while (true) {
-                int pc = frame.getNextPC();
-                thread.setPc(pc);
 
-                reader.reset(code.getBytes(), pc);
-                int opcode = reader.readInt8();
+            while (true) {
+                reader.setPc(frame.getNextPC());
+                thread.setPc(frame.getNextPC());
+                int opcode = reader.readUint8();
                 InstructionEnum instruction = InstructionEnum.getInstructionEnum(opcode);
                 instruction.fetchOperands(reader);
                 frame.setNextPC(reader.getPc());
 
-                System.out.println("pc:"+pc+" opcode:"+opcode+" instruction:"+instruction.getName());
+                System.out.println("pc:"+reader.getPc()+" opcode:"+opcode+" instruction:"+instruction.getName());
                 instruction.execute(frame);
             }
         }catch (Exception e) {

@@ -113,7 +113,7 @@ public enum InstructionEnum implements Instruction {
     B_I_PUSH("bipush", 0x10) {
         @Override
         public void fetchOperands(ByteCodeReader reader) {
-            this.val = reader.readInt8();
+            this.val = reader.readUint8();
         }
 
         @Override
@@ -141,7 +141,7 @@ public enum InstructionEnum implements Instruction {
     L_LOAD("lload", 0x16) {
         @Override
         public void fetchOperands(ByteCodeReader reader) {
-            this.index = reader.readInt8();
+            this.index = reader.readUint8();
         }
 
         @Override
@@ -155,7 +155,7 @@ public enum InstructionEnum implements Instruction {
     D_LOAD("dload", 0x18) {
         @Override
         public void fetchOperands(ByteCodeReader reader) {
-            this.index = reader.readInt8();
+            this.index = reader.readUint8();
         }
 
         @Override
@@ -225,7 +225,7 @@ public enum InstructionEnum implements Instruction {
     A_LOAD("aload", 0x19) {
         @Override
         public void fetchOperands(ByteCodeReader reader) {
-            this.index = reader.readInt8();
+            this.index = reader.readUint8();
         }
 
         @Override
@@ -267,7 +267,7 @@ public enum InstructionEnum implements Instruction {
     I_LOAD("iload", 0x15) {
         @Override
         public void fetchOperands(ByteCodeReader reader) {
-            this.index = reader.readInt8();
+            this.index = reader.readUint8();
         }
 
         @Override
@@ -309,7 +309,7 @@ public enum InstructionEnum implements Instruction {
     F_LOAD("fload", 0x17) {
         @Override
         public void fetchOperands(ByteCodeReader reader) {
-            this.index = reader.readInt8();
+            this.index = reader.readUint8();
         }
 
         @Override
@@ -352,7 +352,7 @@ public enum InstructionEnum implements Instruction {
     L_STORE("lstore", 0x37) {
         @Override
         public void fetchOperands(ByteCodeReader reader) {
-            this.index = reader.readInt8();
+            this.index = reader.readUint8();
         }
 
         @Override
@@ -394,7 +394,7 @@ public enum InstructionEnum implements Instruction {
     D_STORE("dstore", 0x39) {
         @Override
         public void fetchOperands(ByteCodeReader reader) {
-            this.index = reader.readInt8();
+            this.index = reader.readUint8();
         }
 
         @Override
@@ -436,7 +436,7 @@ public enum InstructionEnum implements Instruction {
     A_STORE("astore", 0x3a) {
         @Override
         public void fetchOperands(ByteCodeReader reader) {
-            this.index = reader.readInt8();
+            this.index = reader.readUint8();
         }
 
         @Override
@@ -478,7 +478,7 @@ public enum InstructionEnum implements Instruction {
     I_STORE("istore", 0x36) {
         @Override
         public void fetchOperands(ByteCodeReader reader) {
-            this.index = reader.readInt8();
+            this.index = reader.readUint8();
         }
 
         @Override
@@ -520,7 +520,7 @@ public enum InstructionEnum implements Instruction {
     F_STORE("fstore", 0x38) {
         @Override
         public void fetchOperands(ByteCodeReader reader) {
-            this.index = reader.readInt8();
+            this.index = reader.readUint8();
         }
 
         @Override
@@ -973,7 +973,7 @@ public enum InstructionEnum implements Instruction {
     I_INC("iinc", 0x84) {
         @Override
         public void fetchOperands(ByteCodeReader reader) {
-            this.index = reader.readInt8();
+            this.index = reader.readUint8();
             this.constVal = reader.readInt8();
         }
 
@@ -985,7 +985,7 @@ public enum InstructionEnum implements Instruction {
         }
 
         private int index;
-        private int constVal;
+        private byte constVal;
     },
     // 类型转换指令
     I2L("i2l", 0x85) {
@@ -1549,7 +1549,7 @@ public enum InstructionEnum implements Instruction {
     RET("ret", 0xa9) {
         @Override
         public void fetchOperands(ByteCodeReader reader) {
-            this.index = reader.readInt8();
+            this.index = reader.readUint8();
         }
 
         @Override
@@ -1566,13 +1566,13 @@ public enum InstructionEnum implements Instruction {
 
         @Override
         public void fetchOperands(ByteCodeReader reader) {
-            int opcode = reader.readInt8();
+            int opcode = reader.readUint8();
             // 因为enum无法继承，所以这里重写一下
             switch (opcode) {
                 case 0x15 -> instruction = new Instruction() {
                     @Override
                     public void fetchOperands(ByteCodeReader reader) {
-                        this.index = reader.readInt16();
+                        this.index = reader.readUint16();
                     }
 
                     @Override
@@ -1586,7 +1586,7 @@ public enum InstructionEnum implements Instruction {
                 case 0x16 -> instruction = new Instruction() {
                     @Override
                     public void fetchOperands(ByteCodeReader reader) {
-                        this.index = reader.readInt16();
+                        this.index = reader.readUint16();
                     }
 
                     @Override
@@ -1600,7 +1600,7 @@ public enum InstructionEnum implements Instruction {
                 case 0x17 -> instruction = new Instruction() {
                     @Override
                     public void fetchOperands(ByteCodeReader reader) {
-                        this.index = reader.readInt16();
+                        this.index = reader.readUint16();
                     }
 
                     @Override
@@ -1614,7 +1614,7 @@ public enum InstructionEnum implements Instruction {
                 case 0x18 -> instruction = new Instruction() {
                     @Override
                     public void fetchOperands(ByteCodeReader reader) {
-                        this.index = reader.readInt16();
+                        this.index = reader.readUint16();
                     }
 
                     @Override
@@ -1628,7 +1628,7 @@ public enum InstructionEnum implements Instruction {
                 case 0x19 -> instruction = new Instruction() {
                     @Override
                     public void fetchOperands(ByteCodeReader reader) {
-                        this.index = reader.readInt16();
+                        this.index = reader.readUint16();
                     }
 
                     @Override
@@ -1642,7 +1642,7 @@ public enum InstructionEnum implements Instruction {
                 case 0x36 -> instruction = new Instruction() {
                     @Override
                     public void fetchOperands(ByteCodeReader reader) {
-                        this.index = reader.readInt16();
+                        this.index = reader.readUint16();
                     }
 
                     @Override
@@ -1656,7 +1656,7 @@ public enum InstructionEnum implements Instruction {
                 case 0x37 -> instruction = new Instruction() {
                     @Override
                     public void fetchOperands(ByteCodeReader reader) {
-                        this.index = reader.readInt16();
+                        this.index = reader.readUint16();
                     }
 
                     @Override
@@ -1670,7 +1670,7 @@ public enum InstructionEnum implements Instruction {
                 case 0x38 -> instruction = new Instruction() {
                     @Override
                     public void fetchOperands(ByteCodeReader reader) {
-                        this.index = reader.readInt16();
+                        this.index = reader.readUint16();
                     }
 
                     @Override
@@ -1684,7 +1684,7 @@ public enum InstructionEnum implements Instruction {
                 case 0x39 -> instruction = new Instruction() {
                     @Override
                     public void fetchOperands(ByteCodeReader reader) {
-                        this.index = reader.readInt16();
+                        this.index = reader.readUint16();
                     }
 
                     @Override
@@ -1698,7 +1698,7 @@ public enum InstructionEnum implements Instruction {
                 case 0x3a -> instruction = new Instruction() {
                     @Override
                     public void fetchOperands(ByteCodeReader reader) {
-                        this.index = reader.readInt16();
+                        this.index = reader.readUint16();
                     }
 
                     @Override
@@ -1712,7 +1712,7 @@ public enum InstructionEnum implements Instruction {
                 case 0x84 -> instruction = new Instruction() {
                     @Override
                     public void fetchOperands(ByteCodeReader reader) {
-                        this.index = reader.readInt16();
+                        this.index = reader.readUint16();
                         this.constVal = reader.readInt16();
                     }
 
@@ -1729,7 +1729,7 @@ public enum InstructionEnum implements Instruction {
                 case 0xa9 -> instruction = new Instruction() {
                     @Override
                     public void fetchOperands(ByteCodeReader reader) {
-                        this.index = reader.readInt16();
+                        this.index = reader.readUint16();
                     }
 
                     @Override
