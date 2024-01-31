@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.example.instructions.base.ByteCodeReader;
 import org.example.instructions.base.Instruction;
 import org.example.rtda.JFrame;
-import org.example.rtda.JObject;
+import org.example.rtda.heap.JObject;
 import org.example.rtda.Slot;
 
 import java.util.HashMap;

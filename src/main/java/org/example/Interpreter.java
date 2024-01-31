@@ -50,7 +50,6 @@ public class Interpreter {
         }
         ByteCodeReader reader = new ByteCodeReader(codeBytes,frame.getNextPC());
         try{
-
             while (true) {
                 reader.setPc(frame.getNextPC());
                 thread.setPc(frame.getNextPC());
@@ -61,6 +60,7 @@ public class Interpreter {
 
                 System.out.println("pc:"+reader.getPc()+" opcode:"+opcode+" instruction:"+instruction.getName());
                 instruction.execute(frame);
+                // todo 需要添加return指令
             }
         }catch (Exception e) {
             e.printStackTrace();

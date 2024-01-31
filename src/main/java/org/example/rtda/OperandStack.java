@@ -1,6 +1,7 @@
 package org.example.rtda;
 
 import lombok.Data;
+import org.example.rtda.heap.JObject;
 
 /**
  * @auth nss
