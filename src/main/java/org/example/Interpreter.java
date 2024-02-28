@@ -7,7 +7,6 @@ import org.example.classfile.classfield.attributes.Code;
 import org.example.constant.AttributeEnum;
 import org.example.constant.InstructionEnum;
 import org.example.instructions.base.ByteCodeReader;
-import org.example.instructions.base.Instruction;
 import org.example.rtda.JFrame;
 import org.example.rtda.JThread;
 

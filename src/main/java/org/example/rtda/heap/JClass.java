@@ -67,7 +67,23 @@ public class JClass {
      * 从class文件中加载类信息
      */
     public JClass(ClassFile file) {
-
+        this.accessFlags = file.getAccessFlags().toInteger();
+        this.name = file.getThisClass().toString();
+        this.superClassName = file.getSuperClass().toString();
+        this.interfaceNames = new String[file.getInterfacesCount().toInteger()];
+        for (int i = 0; i < file.getInterfacesCount().toValue(); i++) {
+            //todo
+            this.interfaceNames[i] = file.getInterfaces()[i].toString();
+        }
+        this.ConstantPool = new JConstantPool(file.getConstantPool());
+        this.fields = new JField[file.getFieldsCount().toInteger()];
+        for (int i = 0; i < file.getFieldsCount().toValue(); i++) {
+            this.fields[i] = new JField(file.getFields()[i]);
+        }
+        this.methods = new JMethod[file.getMethodsCount().toInteger()];
+        for (int i = 0; i < file.getMethodsCount().toValue(); i++) {
+            this.methods[i] = new JMethod(file.getMethods()[i]);
+        }
     }
     /**
      * 判断是否是public
