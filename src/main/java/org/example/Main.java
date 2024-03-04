@@ -9,6 +9,7 @@ import org.example.classpath.ClassPath;
 import org.example.rtda.JFrame;
 import org.example.rtda.LocalVars;
 import org.example.rtda.OperandStack;
+import org.example.rtda.heap.JClass;
 
 import java.util.LinkedList;
 
@@ -80,13 +81,16 @@ public class Main {
             };
             // 解析class文件
             ClassFile classFile = ClassReader.analyzeClassFile(list);
-            Method mainMethod = getMainMethod(classFile);
-            if (mainMethod == null) {
-                System.out.println("Main method not found in class " + cmd.getClassName());
-                return;
-            }
-            Interpreter interpreter = new Interpreter();
-            interpreter.interpret(mainMethod);
+
+            JClass jClass = new JClass(classFile);
+            System.out.println(jClass);
+//            Method mainMethod = getMainMethod(classFile);
+//            if (mainMethod == null) {
+//                System.out.println("Main method not found in class " + cmd.getClassName());
+//                return;
+//            }
+//            Interpreter interpreter = new Interpreter();
+//            interpreter.interpret(mainMethod);
 
 
         } catch (Exception e) {

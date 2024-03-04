@@ -2,6 +2,7 @@ package org.example.rtda.heap;
 
 import lombok.Data;
 import org.example.classfile.classfield.ClassFile;
+import org.example.classfile.classfield.constantpool.ConstantInfo;
 import org.example.constant.AccessFlagEnum;
 
 /**
@@ -67,14 +68,12 @@ public class JClass {
      * 从class文件中加载类信息
      */
     public JClass(ClassFile file) {
-
         this.accessFlags = file.getAccessFlags().toInteger();
         this.name = file.getThisClass().toString();
         this.superClassName = file.getSuperClass().toString();
         this.interfaceNames = new String[file.getInterfacesCount().toInteger()];
         for (int i = 0; i < file.getInterfacesCount().toValue(); i++) {
-            //todo
-            this.interfaceNames[i] = file.getInterfaces()[i].toString();
+            this.interfaceNames[i] = ConstantInfo.getUtf8ByClassInfo(file.getConstantPool(),file.getInterfaces()[i].getInterfaceIndex().toInteger());
         }
         this.ConstantPool = new JConstantPool(file.getConstantPool());
         this.fields = new JField[file.getFieldsCount().toInteger()];

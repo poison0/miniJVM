@@ -23,5 +23,9 @@ public interface ConstantInfo {
             throw new RuntimeException("getUtf8Index is not CONSTANT_Utf8_info");
         }
     }
+    static String getUtf8ByClassInfo(ConstantPool constantPool, int index){
+        ConstantClassInfo classInfo = (ConstantClassInfo) constantPool.getConstantInfos()[index];
+        return getUtf8(constantPool, classInfo.nameIndex().toInteger());
+    }
 }
 
