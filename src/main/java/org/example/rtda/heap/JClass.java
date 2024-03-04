@@ -67,6 +67,7 @@ public class JClass {
      * 从class文件中加载类信息
      */
     public JClass(ClassFile file) {
+
         this.accessFlags = file.getAccessFlags().toInteger();
         this.name = file.getThisClass().toString();
         this.superClassName = file.getSuperClass().toString();
