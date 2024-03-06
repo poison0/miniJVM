@@ -2,6 +2,7 @@ package org.example.rtda.heap;
 
 import org.example.classfile.classfield.Field;
 import org.example.classfile.classfield.Method;
+import org.example.classfile.classfield.constantpool.ConstantPool;
 
 /**
  * 方法
@@ -22,8 +23,8 @@ public class JMethod extends JField{
      */
     private byte[] code;
 
-    public JMethod(Method method) {
-        super(method);
+    public JMethod(Method method, ConstantPool constantPool) {
+        super(method,constantPool);
         //todo
     }
 }

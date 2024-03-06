@@ -78,11 +78,11 @@ public class JClass {
         this.ConstantPool = new JConstantPool(file.getConstantPool());
         this.fields = new JField[file.getFieldsCount().toInteger()];
         for (int i = 0; i < file.getFieldsCount().toValue(); i++) {
-            this.fields[i] = new JField(file.getFields()[i]);
+            this.fields[i] = new JField(file.getFields()[i],file.getConstantPool());
         }
         this.methods = new JMethod[file.getMethodsCount().toInteger()];
         for (int i = 0; i < file.getMethodsCount().toValue(); i++) {
-            this.methods[i] = new JMethod(file.getMethods()[i]);
+            this.methods[i] = new JMethod(file.getMethods()[i],file.getConstantPool());
         }
     }
     /**
