@@ -15,9 +15,12 @@ public class JConstantPool {
 
     private JConstant[] constants;
 
-    public JConstantPool(ConstantPool constantPool) {
+    private JClass clazz;
+
+    public JConstantPool(JClass clazz,ConstantPool constantPool) {
+        this.clazz = clazz;
         constants = new JConstant[constantPool.getConstantInfos().length];
-        for (int i = 0; i < constantPool.getConstantInfos().length; i++) {
+        for (int i = 1; i < constantPool.getConstantInfos().length; i++) {
             ConstantInfo constantInfo = constantPool.getConstantInfos()[i];
             JConstant jConstant = constantInfo.getTag().getJConstant(constantInfo, constantPool);
             constants[i] = jConstant;

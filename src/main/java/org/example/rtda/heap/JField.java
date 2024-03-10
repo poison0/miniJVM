@@ -28,10 +28,11 @@ public class JField {
      */
     public JClass clazz;
 
-    public JField(Field field, ConstantPool constantPool) {
+    public JField(JClass clazz,Field field, ConstantPool constantPool) {
         this.accessFlags = field.getAccessFlags().toInteger();
         this.name = ConstantInfo.getUtf8(constantPool, field.getNameIndex().toInteger());
         this.descriptor = ConstantInfo.getUtf8(constantPool, field.getDescriptorIndex().toInteger());
-        //todo
+        this.clazz = clazz;
     }
+
 }
