@@ -83,7 +83,7 @@ public class Main {
             ClassFile classFile = ClassReader.analyzeClassFile(list);
 
             JClass jClass = new JClass(classFile);
-            System.out.println(jClass);
+            System.out.println(111);
 //            Method mainMethod = getMainMethod(classFile);
 //            if (mainMethod == null) {
 //                System.out.println("Main method not found in class " + cmd.getClassName());
