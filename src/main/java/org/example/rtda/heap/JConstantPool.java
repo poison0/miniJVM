@@ -46,6 +46,21 @@ public class JConstantPool {
                     ConstantUtf8Info varInfo = (ConstantUtf8Info)constantPool.getConstantInfos()[constantStringInfo.stringIndex().toInteger()];
                     constants[i] = new StringInfo(varInfo.bytes().toString());
                 }
+                case CONSTANT_Class_info -> {
+                    ConstantClassInfo constantClassInfo = (ConstantClassInfo) constantInfo;
+                    ConstantUtf8Info varInfo = (ConstantUtf8Info)constantPool.getConstantInfos()[constantClassInfo.nameIndex().toInteger()];
+                    constants[i] = new ClassRef(this,varInfo.bytes().toString(),clazz);
+                }
+                case CONSTANT_Fieldref_info -> {
+                    ConstantFieldrefInfo constantFieldrefInfo = (ConstantFieldrefInfo) constantInfo;
+                    ConstantClassInfo classInfo = (ConstantClassInfo)constantPool.getConstantInfos()[constantFieldrefInfo.classIndex().toInteger()];
+                    //todo
+                    ConstantNameAndTypeInfo nameAndTypeInfo = (ConstantNameAndTypeInfo)constantPool.getConstantInfos()[constantFieldrefInfo.nameAndTypeIndex().toInteger()];
+                    ConstantUtf8Info className = (ConstantUtf8Info)constantPool.getConstantInfos()[classInfo.nameIndex().toInteger()];
+                    ConstantUtf8Info name = (ConstantUtf8Info)constantPool.getConstantInfos()[nameAndTypeInfo.nameIndex().toInteger()];
+                    ConstantUtf8Info descriptor = (ConstantUtf8Info)constantPool.getConstantInfos()[nameAndTypeInfo.descriptorIndex().toInteger()];
+                    constants[i] = new FieldRef(this,className.bytes().toString(),clazz,name.bytes().toString(),descriptor.bytes().toString());
+                }
                 default -> {}
             }
         }

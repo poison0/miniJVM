@@ -1,6 +1,7 @@
 package org.example.rtda.heap;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.example.classfile.classfield.Method;
 import org.example.classfile.classfield.attributes.Attribute;
 import org.example.classfile.classfield.attributes.Code;
@@ -13,6 +14,7 @@ import org.example.constant.AttributeEnum;
  * @date 2024/1/31
  */
 @Getter
+@Setter
 public class JMethod extends JField{
     /**
      * 操作数栈大小
@@ -25,7 +27,7 @@ public class JMethod extends JField{
     /**
      * 方法字节码
      */
-    private Integer[] code;
+    private byte[] code;
 
     public JMethod(JClass clazz,Method method, ConstantPool constantPool) {
         super(clazz,method,constantPool);
@@ -34,7 +36,10 @@ public class JMethod extends JField{
                 Code codeInfo = (Code) attribute.attributeInfo();
                 this.maxStack = codeInfo.maxStack().toInteger();
                 this.maxLocals = codeInfo.maxLocals().toInteger();
-                this.code = codeInfo.code().getBytes();
+                code = new byte[codeInfo.code().getBytes().length];
+                for (int i = 0; i < codeInfo.code().getBytes().length; i++) {
+                    code[i] = codeInfo.code().getBytes()[i].byteValue();
+                }
             }
         }
     }

@@ -70,8 +70,8 @@ public class JClass {
      */
     public JClass(ClassFile file) {
         this.accessFlags = file.getAccessFlags().toInteger();
-        this.name = file.getThisClass().toString();
-        this.superClassName = file.getSuperClass().toString();
+        this.name = ConstantInfo.getUtf8ByClassInfo(file.getConstantPool(),file.getThisClass().toInteger());
+        this.superClassName = ConstantInfo.getUtf8ByClassInfo(file.getConstantPool(),file.getSuperClass().toInteger());
         this.interfaceNames = new String[file.getInterfacesCount().toInteger()];
         for (int i = 0; i < file.getInterfacesCount().toValue(); i++) {
             this.interfaceNames[i] = ConstantInfo.getUtf8ByClassInfo(file.getConstantPool(),file.getInterfaces()[i].getInterfaceIndex().toInteger());
