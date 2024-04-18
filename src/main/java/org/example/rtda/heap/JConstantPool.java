@@ -61,6 +61,26 @@ public class JConstantPool {
                     ConstantUtf8Info descriptor = (ConstantUtf8Info)constantPool.getConstantInfos()[nameAndTypeInfo.descriptorIndex().toInteger()];
                     constants[i] = new FieldRef(this,className.bytes().toString(),clazz,name.bytes().toString(),descriptor.bytes().toString());
                 }
+                case CONSTANT_Methodref_info -> {
+                    ConstantMethodrefInfo constantMethodrefInfo = (ConstantMethodrefInfo) constantInfo;
+                    ConstantClassInfo classInfo = (ConstantClassInfo)constantPool.getConstantInfos()[constantMethodrefInfo.classIndex().toInteger()];
+                    //todo
+                    ConstantNameAndTypeInfo nameAndTypeInfo = (ConstantNameAndTypeInfo)constantPool.getConstantInfos()[constantMethodrefInfo.nameAndTypeIndex().toInteger()];
+                    ConstantUtf8Info className = (ConstantUtf8Info)constantPool.getConstantInfos()[classInfo.nameIndex().toInteger()];
+                    ConstantUtf8Info name = (ConstantUtf8Info)constantPool.getConstantInfos()[nameAndTypeInfo.nameIndex().toInteger()];
+                    ConstantUtf8Info descriptor = (ConstantUtf8Info)constantPool.getConstantInfos()[nameAndTypeInfo.descriptorIndex().toInteger()];
+                    constants[i] = new MethodRef(this,className.bytes().toString(),clazz,name.bytes().toString(),descriptor.bytes().toString());
+                }
+                case CONSTANT_InterfaceMethodref_info -> {
+                    ConstantInterfaceMethodrefInfo constantInterfaceMethodrefInfo = (ConstantInterfaceMethodrefInfo) constantInfo;
+                    ConstantClassInfo classInfo = (ConstantClassInfo)constantPool.getConstantInfos()[constantInterfaceMethodrefInfo.classIndex().toInteger()];
+                    //todo
+                    ConstantNameAndTypeInfo nameAndTypeInfo = (ConstantNameAndTypeInfo)constantPool.getConstantInfos()[constantInterfaceMethodrefInfo.nameAndTypeIndex().toInteger()];
+                    ConstantUtf8Info className = (ConstantUtf8Info)constantPool.getConstantInfos()[classInfo.nameIndex().toInteger()];
+                    ConstantUtf8Info name = (ConstantUtf8Info)constantPool.getConstantInfos()[nameAndTypeInfo.nameIndex().toInteger()];
+                    ConstantUtf8Info descriptor = (ConstantUtf8Info)constantPool.getConstantInfos()[nameAndTypeInfo.descriptorIndex().toInteger()];
+                    constants[i] = new InterfaceMethodRef(this,className.bytes().toString(),clazz,name.bytes().toString(),descriptor.bytes().toString());
+                }
                 default -> {}
             }
         }

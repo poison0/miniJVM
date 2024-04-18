@@ -30,5 +30,6 @@ public class SymRef implements JConstant {
     public SymRef(JConstantPool constantPool, String className, JClass clazz) {
         this.constantPool = constantPool;
         this.className = className;
+        this.clazz = clazz;
     }
 }
