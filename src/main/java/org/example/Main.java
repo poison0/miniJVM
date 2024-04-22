@@ -77,7 +77,6 @@ public class Main {
             for (byte aByte : bytes) {
                 int unsignedInt = Byte.toUnsignedInt(aByte);
                 list.add(unsignedInt);
-//                System.out.print(unsignedInt+" ");
             };
             // 解析class文件
             ClassFile classFile = ClassReader.analyzeClassFile(list);

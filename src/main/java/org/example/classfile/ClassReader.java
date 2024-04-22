@@ -1,6 +1,9 @@
 package org.example.classfile;
 
-import org.example.classfile.classfield.*;
+import org.example.classfile.classfield.ClassFile;
+import org.example.classfile.classfield.Field;
+import org.example.classfile.classfield.Interface;
+import org.example.classfile.classfield.Method;
 import org.example.classfile.classfield.attributes.Attribute;
 import org.example.classfile.classfield.attributes.AttributeInfo;
 import org.example.classfile.classfield.constantpool.ConstantInfo;
@@ -18,6 +21,14 @@ import static org.example.util.ClassReaderUtil.*;
  */
 public class ClassReader {
 
+    public static ClassFile readClassFile(byte[] bytes) {
+        LinkedList<Integer> list = new LinkedList<>();
+        for (byte aByte : bytes) {
+            int unsignedInt = Byte.toUnsignedInt(aByte);
+            list.add(unsignedInt);
+        }
+        return analyzeClassFile(list);
+    }
     /**
      * 解析class文件
      */
