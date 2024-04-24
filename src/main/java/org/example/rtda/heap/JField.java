@@ -44,7 +44,7 @@ public class JField {
         this.name = ConstantInfo.getUtf8(constantPool, field.getNameIndex().toInteger());
         this.descriptor = ConstantInfo.getUtf8(constantPool, field.getDescriptorIndex().toInteger());
         this.clazz = clazz;
-        // todo 设置常量池索引 constValueIndex
+        // todo 设置常量池索引 constValueIndex 属性表 ConstantValue 的数据
     }
 
     public boolean isStatic() {
