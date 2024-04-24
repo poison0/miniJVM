@@ -85,4 +85,18 @@ public class JConstantPool {
             }
         }
     }
+
+    public int getInteger(int cpIndex) {
+        return ((IntInfo)constants[cpIndex]).value();
+    }
+
+    public float getFloat(int cpIndex) {
+        return ((FloatInfo)constants[cpIndex]).value();
+    }
+    public long getLong(int cpIndex) {
+        return ((LongInfo)constants[cpIndex]).value();
+    }
+    public double getDouble(int cpIndex) {
+        return ((DoubleInfo)constants[cpIndex]).value();
+    }
 }

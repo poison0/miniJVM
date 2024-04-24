@@ -4,6 +4,7 @@ import lombok.Data;
 import org.example.classfile.ClassReader;
 import org.example.classfile.classfield.ClassFile;
 import org.example.classpath.ClassPath;
+import org.example.rtda.LocalVars;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -72,7 +73,100 @@ public class JClassLoader {
      * @param clazz 类
      */
     private void prepare(JClass clazz) {
-        //todo 准备暂时不加
+        calcInstanceFieldSlotIds(clazz);
+        calcStaticFieldSlotIds(clazz);
+        allocAndInitInstanceVars(clazz);
+    }
+
+    /**
+     * 计算静态字段的个数同时给字段编号
+     * @param clazz 类
+     */
+    private void calcStaticFieldSlotIds(JClass clazz) {
+        int slotId = 0;
+        for (JField field : clazz.getFields()) {
+            if (field.isStatic()){
+                field.setSlotId(slotId);
+                slotId++;
+                if (field.isLongOrDouble()){
+                    slotId++;
+                }
+            }
+        }
+        clazz.setStaticSlotCount(slotId);
+    }
+
+    /**
+     * 分配空间并设置初始值
+     * @param clazz 类
+     */
+    private void allocAndInitInstanceVars(JClass clazz) {
+        clazz.setStaticVars(new LocalVars(clazz.getStaticSlotCount()));
+        for (JField field : clazz.getFields()) {
+            if (field.isStatic() && field.isFinal()){
+                initStaticFinalVar(clazz,field);
+            }
+        }
+    }
+
+    /**
+     * 初始化静态final变量
+     * @param clazz 类
+     * @param field 字段
+     */
+    private void initStaticFinalVar(JClass clazz, JField field) {
+        LocalVars vars = clazz.getStaticVars();
+        JConstantPool cp = clazz.getConstantPool();
+        int cpIndex = field.getConstValueIndex();
+        int slotId = field.getSlotId();
+        if (cpIndex > 0){
+            switch (field.getDescriptor()){
+                case "Z":
+                case "B":
+                case "C":
+                case "S":
+                case "I":
+                    int i = cp.getInteger(cpIndex);
+                    vars.setInt(slotId,i);
+                    break;
+                case "J":
+                    long l = cp.getLong(cpIndex);
+                    vars.setLong(slotId,l);
+                    break;
+                case "F":
+                    float f = cp.getFloat(cpIndex);
+                    vars.setFloat(slotId,f);
+                    break;
+                case "D":
+                    double d = cp.getDouble(cpIndex);
+                    vars.setDouble(slotId,d);
+                    break;
+                case "Ljava/lang/String;":
+                    //todo 字符串之后再说
+                    break;
+            }
+        }
+    }
+
+    /**
+     * 计算实例字段的个数同时给字段编号
+     * @param clazz 类
+     */
+    private void calcInstanceFieldSlotIds(JClass clazz) {
+        int slotId = 0;
+        if (clazz.getSuperClass() != null){
+            slotId = clazz.getSuperClass().getInstanceSlotCount();
+        }
+        for (JField field : clazz.getFields()) {
+            if (!field.isStatic()){
+                field.setSlotId(slotId);
+                slotId++;
+                if (field.isLongOrDouble()){
+                    slotId++;
+                }
+            }
+        }
+        clazz.setInstanceSlotCount(slotId);
     }
 
     private void verify(JClass clazz) {

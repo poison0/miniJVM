@@ -10,43 +10,49 @@ public class AssessUtil {
     /**
      * 判断是否是final
      */
-    public boolean isFinal(int flag) {
+    public static boolean isFinal(int flag) {
         return assessFlag(flag, AccessFlagEnum.ACC_FINAL);
     }
     /**
      * 判断是否是super
      */
-    public boolean isSuper(int flag) {
+    public static boolean isSuper(int flag) {
         return assessFlag(flag, AccessFlagEnum.ACC_SUPER);
     }
     /**
      * 判断是否是interface
      */
-    public boolean isInterface(int flag) {
+    public static boolean isInterface(int flag) {
         return assessFlag(flag, AccessFlagEnum.ACC_INTERFACE);
     }
     /**
      * 判断是否是abstract
      */
-    public boolean isAbstract(int flag) {
+    public static boolean isAbstract(int flag) {
         return assessFlag(flag, AccessFlagEnum.ACC_ABSTRACT);
     }
     /**
      * 判断是否是synthetic
      */
-    public boolean isSynthetic(int flag) {
+    public static boolean isSynthetic(int flag) {
         return assessFlag(flag, AccessFlagEnum.ACC_SYNTHETIC);
+    }
+    /**
+     * 判断是否是静态
+     */
+    public static boolean isStatic(int flag) {
+        return assessFlag(flag, AccessFlagEnum.ACC_STATIC);
     }
     /**
      * 判断是否是annotation
      */
-    public boolean isAnnotation(int flag) {
+    public static boolean isAnnotation(int flag) {
         return assessFlag(flag, AccessFlagEnum.ACC_ANNOTATION);
     }
     /**
      * 判断是否是enum
      */
-    public boolean isEnum(int flag) {
+    public static boolean isEnum(int flag) {
         return assessFlag(flag, AccessFlagEnum.ACC_ENUM);
     }
 

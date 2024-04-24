@@ -4,6 +4,7 @@ import lombok.Data;
 import org.example.rtda.heap.JObject;
 
 /**
+ * 局部变量、类变量和实例变量存储结构
  * @auth nss
  * @date 2024/1/14
  */

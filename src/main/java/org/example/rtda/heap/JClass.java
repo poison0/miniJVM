@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.classfile.classfield.ClassFile;
 import org.example.classfile.classfield.constantpool.ConstantInfo;
+import org.example.rtda.LocalVars;
 
 /**
  * @auth nss
@@ -63,7 +64,7 @@ public class JClass {
     /**
      * 静态变量
      */
-    private JSlot[] staticVars;
+    private LocalVars staticVars;
 
     /**
      * 从class文件中加载类信息
