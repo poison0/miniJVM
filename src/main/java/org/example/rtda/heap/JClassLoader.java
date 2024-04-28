@@ -120,30 +120,26 @@ public class JClassLoader {
         int cpIndex = field.getConstValueIndex();
         int slotId = field.getSlotId();
         if (cpIndex > 0){
-            switch (field.getDescriptor()){
-                case "Z":
-                case "B":
-                case "C":
-                case "S":
-                case "I":
+            switch (field.getDescriptor()) {
+                case "Z", "B", "C", "S", "I" -> {
                     int i = cp.getInteger(cpIndex);
-                    vars.setInt(slotId,i);
-                    break;
-                case "J":
+                    vars.setInt(slotId, i);
+                }
+                case "J" -> {
                     long l = cp.getLong(cpIndex);
-                    vars.setLong(slotId,l);
-                    break;
-                case "F":
+                    vars.setLong(slotId, l);
+                }
+                case "F" -> {
                     float f = cp.getFloat(cpIndex);
-                    vars.setFloat(slotId,f);
-                    break;
-                case "D":
+                    vars.setFloat(slotId, f);
+                }
+                case "D" -> {
                     double d = cp.getDouble(cpIndex);
-                    vars.setDouble(slotId,d);
-                    break;
-                case "Ljava/lang/String;":
-                    //todo 字符串之后再说
-                    break;
+                    vars.setDouble(slotId, d);
+                }
+                case "Ljava/lang/String;" -> {
+                }
+                //todo 字符串之后再说
             }
         }
     }

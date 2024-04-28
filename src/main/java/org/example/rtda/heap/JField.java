@@ -2,8 +2,11 @@ package org.example.rtda.heap;
 
 import lombok.Data;
 import org.example.classfile.classfield.Field;
+import org.example.classfile.classfield.attributes.Attribute;
+import org.example.classfile.classfield.attributes.ConstantValue;
 import org.example.classfile.classfield.constantpool.ConstantInfo;
 import org.example.classfile.classfield.constantpool.ConstantPool;
+import org.example.constant.AttributeEnum;
 import org.example.util.AssessUtil;
 
 /**
@@ -44,7 +47,11 @@ public class JField {
         this.name = ConstantInfo.getUtf8(constantPool, field.getNameIndex().toInteger());
         this.descriptor = ConstantInfo.getUtf8(constantPool, field.getDescriptorIndex().toInteger());
         this.clazz = clazz;
-        // todo 设置常量池索引 constValueIndex 属性表 ConstantValue 的数据
+        for (Attribute attribute : field.getAttributes()) {
+            if (attribute.attributeInfo().getAttributeTag().equals(AttributeEnum.CONSTANT_VALUE)) {
+                this.constValueIndex = ((ConstantValue) attribute.attributeInfo()).constantValueIndex().toInteger();
+            }
+        }
     }
 
     public boolean isStatic() {
@@ -57,5 +64,19 @@ public class JField {
 
     public boolean isFinal() {
         return AssessUtil.isFinal(accessFlags);
+    }
+
+    public boolean isAccessibleTo(JClass d) {
+        if (AssessUtil.isPublic(accessFlags)) {
+            return true;
+        }
+        JClass c = clazz;
+        if (AssessUtil.isProtected(accessFlags)) {
+            return d == c || d.isSubClassOf(c) || c.getPackageName().equals(d.getPackageName());
+        }
+        if (!AssessUtil.isPrivate(accessFlags)) {
+            return c.getPackageName().equals(d.getPackageName());
+        }
+        return d == c;
     }
 }

@@ -59,4 +59,16 @@ public class AssessUtil {
     private static boolean assessFlag(int flag,AccessFlagEnum flagEnum) {
         return 0 != (flag & flagEnum.getFlag());
     }
+
+    public static boolean isPublic(int accessFlags) {
+        return assessFlag(accessFlags, AccessFlagEnum.ACC_PUBLIC);
+    }
+
+    public static boolean isProtected(int accessFlags) {
+        return assessFlag(accessFlags, AccessFlagEnum.ACC_PROTECTED);
+    }
+
+    public static boolean isPrivate(int accessFlags) {
+        return assessFlag(accessFlags, AccessFlagEnum.ACC_PRIVATE);
+    }
 }

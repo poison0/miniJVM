@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.example.classfile.classfield.ClassFile;
 import org.example.classfile.classfield.constantpool.ConstantInfo;
 import org.example.rtda.LocalVars;
+import org.example.util.AssessUtil;
 
 /**
  * @auth nss
@@ -86,5 +87,39 @@ public class JClass {
         for (int i = 0; i < file.getMethodsCount().toValue(); i++) {
             this.methods[i] = new JMethod(this,file.getMethods()[i],file.getConstantPool());
         }
+    }
+
+    /**
+     * 是否是否有权限被访问
+     */
+    public boolean isAccessibleTo(JClass d) {
+        return this.isPublic() || this.getPackageName().equals(d.getPackageName());
+    }
+
+    /**
+     * 获取包名
+     */
+    public String getPackageName() {
+        int i = name.lastIndexOf("/");
+        if (i > 0) {
+            return name.substring(0, i);
+        }
+        return "";
+    }
+
+    private boolean isPublic() {
+        return AssessUtil.isPublic(accessFlags);
+    }
+
+    /**
+     * 是否是子类
+     */
+    public boolean isSubClassOf(JClass c) {
+        for (JClass superClass = this.superClass; superClass != null; superClass = superClass.superClass) {
+            if (superClass == c) {
+                return true;
+            }
+        }
+        return false;
     }
 }

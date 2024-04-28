@@ -14,22 +14,41 @@ public class SymRef implements JConstant {
     /**
      * 运行时常量池
      */
-    private JConstantPool constantPool;
+    protected JConstantPool constantPool;
     /**
      * 类的全限定名
      */
     private String className;
     /**
-     * 类的运行时表示
+     * 当前类解析对象
      */
     private JClass clazz;
 
     public SymRef() {
     }
 
-    public SymRef(JConstantPool constantPool, String className, JClass clazz) {
+    public SymRef(JConstantPool constantPool, String className) {
         this.constantPool = constantPool;
         this.className = className;
-        this.clazz = clazz;
+    }
+
+    /**
+     * 解析类符号引用
+     */
+    public JClass resolvedClass() {
+        if (this.clazz == null) {
+            this.resolveClassRef();
+        }
+        return this.clazz;
+    }
+
+    private void resolveClassRef() {
+        JClass d = this.constantPool.getClazz();
+        JClass c = d.getClassLoader().loadClass(this.className);
+        if (!c.isAccessibleTo(d)) {
+            //没有权限访问
+            throw new RuntimeException("java.lang.IllegalAccessError");
+        }
+        this.clazz = c;
     }
 }

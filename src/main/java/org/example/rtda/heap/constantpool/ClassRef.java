@@ -9,7 +9,7 @@ import org.example.rtda.heap.JConstantPool;
  */
 public class ClassRef extends SymRef{
 
-    public ClassRef(JConstantPool constantPool, String className, JClass clazz) {
-        super(constantPool, className, clazz);
+    public ClassRef(JConstantPool constantPool, String className) {
+        super(constantPool, className);
     }
 }

@@ -49,7 +49,7 @@ public class JConstantPool {
                 case CONSTANT_Class_info -> {
                     ConstantClassInfo constantClassInfo = (ConstantClassInfo) constantInfo;
                     ConstantUtf8Info varInfo = (ConstantUtf8Info)constantPool.getConstantInfos()[constantClassInfo.nameIndex().toInteger()];
-                    constants[i] = new ClassRef(this,varInfo.bytes().toString(),clazz);
+                    constants[i] = new ClassRef(this,varInfo.bytes().toString());
                 }
                 case CONSTANT_Fieldref_info -> {
                     ConstantFieldrefInfo constantFieldrefInfo = (ConstantFieldrefInfo) constantInfo;
@@ -59,7 +59,7 @@ public class JConstantPool {
                     ConstantUtf8Info className = (ConstantUtf8Info)constantPool.getConstantInfos()[classInfo.nameIndex().toInteger()];
                     ConstantUtf8Info name = (ConstantUtf8Info)constantPool.getConstantInfos()[nameAndTypeInfo.nameIndex().toInteger()];
                     ConstantUtf8Info descriptor = (ConstantUtf8Info)constantPool.getConstantInfos()[nameAndTypeInfo.descriptorIndex().toInteger()];
-                    constants[i] = new FieldRef(this,className.bytes().toString(),clazz,name.bytes().toString(),descriptor.bytes().toString());
+                    constants[i] = new FieldRef(this,className.bytes().toString(),name.bytes().toString(),descriptor.bytes().toString());
                 }
                 case CONSTANT_Methodref_info -> {
                     ConstantMethodrefInfo constantMethodrefInfo = (ConstantMethodrefInfo) constantInfo;
@@ -69,7 +69,7 @@ public class JConstantPool {
                     ConstantUtf8Info className = (ConstantUtf8Info)constantPool.getConstantInfos()[classInfo.nameIndex().toInteger()];
                     ConstantUtf8Info name = (ConstantUtf8Info)constantPool.getConstantInfos()[nameAndTypeInfo.nameIndex().toInteger()];
                     ConstantUtf8Info descriptor = (ConstantUtf8Info)constantPool.getConstantInfos()[nameAndTypeInfo.descriptorIndex().toInteger()];
-                    constants[i] = new MethodRef(this,className.bytes().toString(),clazz,name.bytes().toString(),descriptor.bytes().toString());
+                    constants[i] = new MethodRef(this,className.bytes().toString(),name.bytes().toString(),descriptor.bytes().toString());
                 }
                 case CONSTANT_InterfaceMethodref_info -> {
                     ConstantInterfaceMethodrefInfo constantInterfaceMethodrefInfo = (ConstantInterfaceMethodrefInfo) constantInfo;

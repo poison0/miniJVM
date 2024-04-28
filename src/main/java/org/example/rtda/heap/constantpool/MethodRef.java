@@ -19,8 +19,8 @@ public class MethodRef extends SymRef{
     private String descriptor;
     private JMethod method;
 
-    public MethodRef(JConstantPool constantPool, String className, JClass clazz, String name, String descriptor) {
-        super(constantPool, className, clazz);
+    public MethodRef(JConstantPool constantPool, String className,String name, String descriptor) {
+        super(constantPool, className);
         this.name = name;
         this.descriptor = descriptor;
     }
