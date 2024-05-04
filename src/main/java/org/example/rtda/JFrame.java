@@ -1,6 +1,7 @@
 package org.example.rtda;
 
 import lombok.Data;
+import org.example.rtda.heap.JMethod;
 
 /**
  * @auth nss
@@ -19,9 +20,12 @@ public class JFrame {
     //pc寄存器
     private int nextPC;
 
-    public JFrame(JThread JThread, int maxLocals, int maxStack) {
-        this.localVars = new LocalVars(maxLocals);
-        this.operandStack = new OperandStack(maxStack);
+    private JMethod method;
+
+    public JFrame(JThread JThread,JMethod method) {
+        this.localVars = new LocalVars(method.getMaxLocals());
+        this.operandStack = new OperandStack(method.getMaxStack());
         this.JThread = JThread;
+        this.method = method;
     }
 }

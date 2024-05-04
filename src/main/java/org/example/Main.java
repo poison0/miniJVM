@@ -10,6 +10,7 @@ import org.example.rtda.JFrame;
 import org.example.rtda.LocalVars;
 import org.example.rtda.OperandStack;
 import org.example.rtda.heap.JClass;
+import org.example.rtda.heap.JMethod;
 
 import java.util.LinkedList;
 
@@ -30,7 +31,7 @@ public class Main {
         }
     }
     private static void startJVM() {
-        JFrame frame = new JFrame(null,100, 100);
+        JFrame frame = new JFrame(null,null);
         testLocalVars(frame.getLocalVars());
         testOperandStack(frame.getOperandStack());
     }

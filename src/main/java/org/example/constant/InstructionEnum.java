@@ -4,6 +4,10 @@ import lombok.Getter;
 import org.example.instructions.base.ByteCodeReader;
 import org.example.instructions.base.Instruction;
 import org.example.rtda.JFrame;
+import org.example.rtda.LocalVars;
+import org.example.rtda.OperandStack;
+import org.example.rtda.heap.JClass;
+import org.example.rtda.heap.JField;
 import org.example.rtda.heap.JObject;
 import org.example.rtda.Slot;
 
@@ -1795,6 +1799,165 @@ public enum InstructionEnum implements Instruction {
         }
 
         private int branchOffset;
+    },
+    NEW("new", 0xbb) {
+        @Override
+        public void fetchOperands(ByteCodeReader reader) {
+            this.index = reader.readUint16();
+        }
+
+        @Override
+        public void execute(JFrame frame) {
+            JClass clazz = frame.getMethod().getClazz().getConstantPool().getClassRef(this.index);
+            if(clazz.isInterface() || clazz.isAbstract()) {
+                throw new InstantiationError(clazz.getName());
+            }
+            JObject ref = clazz.newObject();
+            frame.getOperandStack().pushRef(ref);
+        }
+        private int index;
+    },
+    PUT_STATIC("putstatic", 0xb3) {
+        @Override
+        public void fetchOperands(ByteCodeReader reader) {
+            this.index = reader.readUint16();
+        }
+
+        @Override
+        public void execute(JFrame frame) {
+            JField field = frame.getMethod().getClazz().getConstantPool().getFieldRef(this.index);
+            JClass clazz = field.getClazz();
+            //todo 没有初始化，就初始化
+//            if (!clazz.isInitStarted()) {
+//                frame.revertNextPc();
+//                clazz.initClass(frame.getJThread(), clazz);
+//                return;
+//            }
+            if (!field.isStatic()) {
+                throw new IncompatibleClassChangeError();
+            }
+            if (field.isFinal()) {
+                //只有初始化方法才能给final字段赋值
+                if (!frame.getMethod().getName().equals("<clinit>") || frame.getMethod().getClazz() != clazz) {
+                    throw new IllegalAccessError();
+                }
+            }
+            String descriptor = field.getDescriptor();
+            int slotId = field.getSlotId();
+            LocalVars staticVars = clazz.getStaticVars();
+            OperandStack operandStack = frame.getOperandStack();
+            switch (descriptor.charAt(0)) {
+                case 'Z', 'B', 'C', 'S', 'I' -> staticVars.getSlots()[slotId].setInt(operandStack.popInt());
+                case 'F' -> staticVars.getSlots()[slotId].setFloat(operandStack.popFloat());
+                case 'J' -> staticVars.getSlots()[slotId].setLong(operandStack.popLong());
+                case 'D' -> staticVars.getSlots()[slotId].setDouble(operandStack.popDouble());
+                case 'L', '[' -> staticVars.getSlots()[slotId].setRef(operandStack.popRef());
+                default -> throw new RuntimeException("Invalid descriptor: " + descriptor);
+            }
+        }
+        private int index;
+    },
+    GET_STATIC("getstatic", 0xb2) {
+        @Override
+        public void fetchOperands(ByteCodeReader reader) {
+            this.index = reader.readUint16();
+        }
+
+        @Override
+        public void execute(JFrame frame) {
+            JField field = frame.getMethod().getClazz().getConstantPool().getFieldRef(this.index);
+            JClass clazz = field.getClazz();
+            //todo 没有初始化，就初始化
+//            if (!clazz.isInitStarted()) {
+//                frame.revertNextPc();
+//                clazz.initClass(frame.getJThread(), clazz);
+//                return;
+//            }
+            if (!field.isStatic()) {
+                throw new IncompatibleClassChangeError();
+            }
+            String descriptor = field.getDescriptor();
+            int slotId = field.getSlotId();
+            LocalVars staticVars = clazz.getStaticVars();
+            OperandStack operandStack = frame.getOperandStack();
+            switch (descriptor.charAt(0)) {
+                case 'Z', 'B', 'C', 'S', 'I' -> operandStack.pushInt(staticVars.getSlots()[slotId].getInt());
+                case 'F' -> operandStack.pushFloat(staticVars.getSlots()[slotId].getFloat());
+                case 'J' -> operandStack.pushLong(staticVars.getSlots()[slotId].getLong());
+                case 'D' -> operandStack.pushDouble(staticVars.getSlots()[slotId].getDouble());
+                case 'L', '[' -> operandStack.pushRef(staticVars.getSlots()[slotId].getRef());
+                default -> throw new RuntimeException("Invalid descriptor: " + descriptor);
+            }
+        }
+        private int index;
+    },
+    PUT_FIELD("putfield", 0xb5) {
+        @Override
+        public void fetchOperands(ByteCodeReader reader) {
+            this.index = reader.readUint16();
+        }
+
+        @Override
+        public void execute(JFrame frame) {
+            JField field = frame.getMethod().getClazz().getConstantPool().getFieldRef(this.index);
+            if (field.isStatic()) {
+                throw new IncompatibleClassChangeError();
+            }
+            if (field.isFinal()) {
+                //final字段只能在构造函数中初始化
+                if (!frame.getMethod().getName().equals("<init>") || frame.getMethod().getClazz() != field.getClazz()) {
+                    throw new IllegalAccessError();
+                }
+            }
+            String descriptor = field.getDescriptor();
+            int slotId = field.getSlotId();
+            OperandStack operandStack = frame.getOperandStack();
+            JObject ref = operandStack.popRef();
+            if (ref == null) {
+                throw new NullPointerException();
+            }
+            Slot[] slots = ref.getFields();
+            switch (descriptor.charAt(0)) {
+                case 'Z', 'B', 'C', 'S', 'I' -> slots[slotId].setInt(operandStack.popInt());
+                case 'F' -> slots[slotId].setFloat(operandStack.popFloat());
+                case 'J' -> slots[slotId].setLong(operandStack.popLong());
+                case 'D' -> slots[slotId].setDouble(operandStack.popDouble());
+                case 'L', '[' -> slots[slotId].setRef(operandStack.popRef());
+                default -> throw new RuntimeException("Invalid descriptor: " + descriptor);
+            }
+        }
+        private int index;
+    },
+    GET_FIELD("getfield", 0xb4) {
+        @Override
+        public void fetchOperands(ByteCodeReader reader) {
+            this.index = reader.readUint16();
+        }
+
+        @Override
+        public void execute(JFrame frame) {
+            JField field = frame.getMethod().getClazz().getConstantPool().getFieldRef(this.index);
+            if (field.isStatic()) {
+                throw new IncompatibleClassChangeError();
+            }
+            String descriptor = field.getDescriptor();
+            int slotId = field.getSlotId();
+            OperandStack operandStack = frame.getOperandStack();
+            JObject ref = operandStack.popRef();
+            if (ref == null) {
+                throw new NullPointerException();
+            }
+            Slot[] slots = ref.getFields();
+            switch (descriptor.charAt(0)) {
+                case 'Z', 'B', 'C', 'S', 'I' -> operandStack.pushInt(slots[slotId].getInt());
+                case 'F' -> operandStack.pushFloat(slots[slotId].getFloat());
+                case 'J' -> operandStack.pushLong(slots[slotId].getLong());
+                case 'D' -> operandStack.pushDouble(slots[slotId].getDouble());
+                case 'L', '[' -> operandStack.pushRef(slots[slotId].getRef());
+                default -> throw new RuntimeException("Invalid descriptor: " + descriptor);
+            }
+        }
+        private int index;
     },
 
     ;

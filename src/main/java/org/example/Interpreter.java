@@ -9,6 +9,7 @@ import org.example.constant.InstructionEnum;
 import org.example.instructions.base.ByteCodeReader;
 import org.example.rtda.JFrame;
 import org.example.rtda.JThread;
+import org.example.rtda.heap.JMethod;
 
 /**
  * @auth nss
@@ -16,37 +17,19 @@ import org.example.rtda.JThread;
  */
 public class Interpreter {
 
-    public void interpret(Method method) {
-        //获取指令属性
-        Attribute codeAttribute = getCodeAttribute(method);
-        if(codeAttribute == null) {
-            return;
-        }
-        Code codeAttr = (Code)codeAttribute.attributeInfo();
-        //获取局部变量表大小
-        ClassFieldType.U2 maxLocals = codeAttr.maxLocals();
-        //获取操作数栈的最大深度
-        ClassFieldType.U2 maxStack = codeAttr.maxStack();
-        //获取指令
-        ClassFieldType.CustomBytes code = codeAttr.code();
-        System.out.println(code.getHexs());
+    public void interpret(JMethod method) {
         //创建线程
         JThread thread = new JThread();
         //创建栈帧
-        JFrame frame = new JFrame(thread, maxLocals.toInteger(), maxStack.toInteger());
+        JFrame frame = new JFrame(thread,method);
         //将栈帧推入线程
         thread.pushFrame(frame);
-
         //获取指令
-        loop(thread,code);
+        loop(thread,method.getCode());
 
     }
-    public void loop(JThread thread,ClassFieldType.CustomBytes code) {
+    public void loop(JThread thread,byte[] codeBytes) {
         JFrame frame = thread.popFrame();
-        byte[] codeBytes = new byte[code.getBytes().length];
-        for (int i = 0; i < code.getBytes().length; i++) {
-            codeBytes[i] = code.getBytes()[i].byteValue();
-        }
         ByteCodeReader reader = new ByteCodeReader(codeBytes,frame.getNextPC());
         try{
             while (true) {
@@ -66,17 +49,5 @@ public class Interpreter {
             System.out.println("LocalVars:"+frame.getLocalVars());
             System.out.println("OperandStack:"+frame.getOperandStack());
         }
-
-
-    }
-
-    public Attribute getCodeAttribute(Method method) {
-        Attribute[] attributes = method.getAttributes();
-        for (Attribute attribute : attributes) {
-            if(AttributeEnum.CODE.equals(attribute.attributeInfo().getAttributeTag())) {
-                return attribute;
-            }
-        }
-        return null;
     }
 }

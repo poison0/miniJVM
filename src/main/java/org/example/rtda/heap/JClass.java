@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.example.classfile.classfield.ClassFile;
 import org.example.classfile.classfield.constantpool.ConstantInfo;
 import org.example.rtda.LocalVars;
+import org.example.rtda.Slot;
 import org.example.util.AssessUtil;
 
 /**
@@ -122,4 +123,27 @@ public class JClass {
         }
         return false;
     }
+
+    /**
+     * 创建对象
+     */
+    public JObject newObject() {
+        //todo 之后再说
+        return new JObject(this,new Slot[this.instanceSlotCount]);
+    }
+
+    /**
+     * 是否是接口
+     */
+    public boolean isInterface() {
+        return AssessUtil.isInterface(accessFlags);
+    }
+
+    /**
+     * 是否是抽象类
+     */
+    public boolean isAbstract() {
+        return AssessUtil.isAbstract(accessFlags);
+    }
+
 }

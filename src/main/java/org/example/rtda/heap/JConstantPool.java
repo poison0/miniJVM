@@ -99,4 +99,12 @@ public class JConstantPool {
     public double getDouble(int cpIndex) {
         return ((DoubleInfo)constants[cpIndex]).value();
     }
+
+    public JClass getClassRef(int index) {
+        return ((ClassRef)constants[index]).resolvedClass();
+    }
+
+    public JField getFieldRef(int index) {
+        return ((FieldRef)constants[index]).resolvedField();
+    }
 }
