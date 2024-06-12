@@ -6,10 +6,12 @@ import org.example.instructions.base.Instruction;
 import org.example.rtda.JFrame;
 import org.example.rtda.LocalVars;
 import org.example.rtda.OperandStack;
-import org.example.rtda.heap.JClass;
-import org.example.rtda.heap.JField;
-import org.example.rtda.heap.JObject;
+import org.example.rtda.heap.*;
 import org.example.rtda.Slot;
+import org.example.rtda.heap.constantpool.DoubleInfo;
+import org.example.rtda.heap.constantpool.FloatInfo;
+import org.example.rtda.heap.constantpool.IntInfo;
+import org.example.rtda.heap.constantpool.LongInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -1957,6 +1959,111 @@ public enum InstructionEnum implements Instruction {
                 default -> throw new RuntimeException("Invalid descriptor: " + descriptor);
             }
         }
+        private int index;
+    },
+    INSTANCE_OF("instanceof", 0xc1) {
+        @Override
+        public void fetchOperands(ByteCodeReader reader) {
+            this.index = reader.readUint16();
+        }
+
+        @Override
+        public void execute(JFrame frame) {
+            JObject ref = frame.getOperandStack().popRef();
+            if (ref == null) {
+                frame.getOperandStack().pushInt(0);
+                return;
+            }
+            JClass clazz = frame.getMethod().getClazz().getConstantPool().getClassRef(this.index);
+            if (ref.isInstanceOf(clazz)) {
+                frame.getOperandStack().pushInt(1);
+            } else {
+                frame.getOperandStack().pushInt(0);
+            }
+        }
+        private int index;
+    },
+    CHECK_CAST("checkcast", 0xc0) {
+        @Override
+        public void fetchOperands(ByteCodeReader reader) {
+            this.index = reader.readUint16();
+        }
+
+        @Override
+        public void execute(JFrame frame) {
+            JObject ref = frame.getOperandStack().popRef();
+            frame.getOperandStack().pushRef(ref);
+            if (ref != null) {
+                JClass clazz = frame.getMethod().getClazz().getConstantPool().getClassRef(this.index);
+                if (!ref.isInstanceOf(clazz)) {
+                    throw new ClassCastException();
+                }
+            }
+        }
+        private int index;
+    },
+    LDC("ldc", 0x12) {
+        @Override
+        public void fetchOperands(ByteCodeReader reader) {
+            this.index = reader.readUint8();
+        }
+
+        @Override
+        public void execute(JFrame frame) {
+            OperandStack operandStack = frame.getOperandStack();
+            JConstantPool constantPool = frame.getMethod().getClazz().getConstantPool();
+            JConstant constant = constantPool.getConstants()[this.index];
+            if (constant instanceof IntInfo) {
+                operandStack.pushInt(((IntInfo) constant).value());
+            } else if (constant instanceof FloatInfo) {
+                operandStack.pushFloat(((FloatInfo) constant).value());
+            }
+            //todo 方法符号先不实现
+        }
+
+        private int index;
+    },
+    LDC_W("ldc_w", 0x13) {
+        @Override
+        public void fetchOperands(ByteCodeReader reader) {
+            //跟ldc一样，只是index是16位
+            this.index = reader.readUint16();
+        }
+
+        @Override
+        public void execute(JFrame frame) {
+            OperandStack operandStack = frame.getOperandStack();
+            JConstantPool constantPool = frame.getMethod().getClazz().getConstantPool();
+            JConstant constant = constantPool.getConstants()[this.index];
+            if (constant instanceof IntInfo) {
+                operandStack.pushInt(((IntInfo) constant).value());
+            } else if (constant instanceof FloatInfo) {
+                operandStack.pushFloat(((FloatInfo) constant).value());
+            }
+            //todo 方法符号先不实现
+        }
+
+        private int index;
+    },
+    LDC2_W("ldc2_w", 0x14) {
+        @Override
+        public void fetchOperands(ByteCodeReader reader) {
+            this.index = reader.readUint16();
+        }
+
+        @Override
+        public void execute(JFrame frame) {
+            OperandStack operandStack = frame.getOperandStack();
+            JConstantPool constantPool = frame.getMethod().getClazz().getConstantPool();
+            JConstant constant = constantPool.getConstants()[this.index];
+            if (constant instanceof LongInfo) {
+                operandStack.pushLong(((LongInfo) constant).value());
+            } else if (constant instanceof DoubleInfo) {
+                operandStack.pushDouble(((DoubleInfo) constant).value());
+            }
+            //todo 方法符号先不实现
+        }
+
         private int index;
     },
 

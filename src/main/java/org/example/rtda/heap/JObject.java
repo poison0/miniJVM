@@ -13,4 +13,8 @@ import org.example.rtda.Slot;
 public class JObject {
     private JClass clazz;
     private Slot[] fields;
+
+    public boolean isInstanceOf(JClass clazz) {
+        return clazz.isAssignableFrom(this.clazz);
+    }
 }

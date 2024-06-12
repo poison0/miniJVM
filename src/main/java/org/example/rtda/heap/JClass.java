@@ -146,4 +146,38 @@ public class JClass {
         return AssessUtil.isAbstract(accessFlags);
     }
 
+    /**
+     *
+     */
+    public boolean isAssignableFrom(JClass clazz) {
+        if (clazz == this) {
+            return true;
+        }
+        if (!this.isInterface()) {
+            return clazz.isSubClassOf(this);
+        } else {
+            return clazz.isImplements(this);
+        }
+    }
+
+    private boolean isImplements(JClass jClass) {
+        for (JClass superClass = this.superClass; superClass != null; superClass = superClass.superClass) {
+            for (JClass r : superClass.interfaces) {
+                if (r == jClass || r.isSubInterfaceOf(jClass)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isSubInterfaceOf(JClass jClass) {
+        for (JClass r : this.interfaces) {
+            if (r == jClass || r.isSubInterfaceOf(jClass)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
