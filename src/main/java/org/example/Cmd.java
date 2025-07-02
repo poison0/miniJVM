@@ -16,4 +16,5 @@ public class Cmd {
     private String xjreOption;
     private String className;
     private String[] args;
+
 }
