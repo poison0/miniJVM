@@ -18,29 +18,29 @@ public class JField {
     /**
      * 访问标志
      */
-    public int accessFlags;
+    private int accessFlags;
     /**
      * 名称
      */
-    public String name;
+    private String name;
     /**
      * 描述符
      */
-    public String descriptor;
+    private String descriptor;
     /**
      * 所属类
      */
-    public JClass clazz;
+    private JClass clazz;
 
     /**
      * 字段编号
      */
-    public int slotId;
+    private int slotId;
 
     /**
      * 常量值索引
      */
-    public int constValueIndex;
+    private int constValueIndex;
 
     public JField(JClass clazz,Field field, ConstantPool constantPool) {
         this.accessFlags = field.getAccessFlags().toInteger();

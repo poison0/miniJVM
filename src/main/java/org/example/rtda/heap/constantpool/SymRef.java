@@ -31,6 +31,11 @@ public class SymRef implements JConstant {
         this.constantPool = constantPool;
         this.className = className;
     }
+    public SymRef(JConstantPool constantPool, String className,JClass clazz) {
+        this.constantPool = constantPool;
+        this.className = className;
+        this.clazz = clazz;
+    }
 
     /**
      * 解析类符号引用

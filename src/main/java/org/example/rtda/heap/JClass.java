@@ -34,7 +34,7 @@ public class JClass {
     /**
      * 运行时常量池
      */
-    private JConstantPool ConstantPool;
+    private JConstantPool constantPool;
     /**
      * 字段表
      */
@@ -79,7 +79,7 @@ public class JClass {
         for (int i = 0; i < file.getInterfacesCount().toValue(); i++) {
             this.interfaceNames[i] = ConstantInfo.getUtf8ByClassInfo(file.getConstantPool(),file.getInterfaces()[i].getInterfaceIndex().toInteger());
         }
-        this.ConstantPool = new JConstantPool(this,file.getConstantPool());
+        this.constantPool = new JConstantPool(this,file.getConstantPool());
         this.fields = new JField[file.getFieldsCount().toInteger()];
         for (int i = 0; i < file.getFieldsCount().toValue(); i++) {
             this.fields[i] = new JField(this,file.getFields()[i],file.getConstantPool());
@@ -116,8 +116,8 @@ public class JClass {
      * 是否是子类
      */
     public boolean isSubClassOf(JClass c) {
-        for (JClass superClass = this.superClass; superClass != null; superClass = superClass.superClass) {
-            if (superClass == c) {
+        for (JClass aClass = this.superClass; aClass != null; aClass = aClass.superClass) {
+            if (aClass == c) {
                 return true;
             }
         }

@@ -20,6 +20,7 @@ import java.util.LinkedList;
  */
 public class Main {
     public static void main(String[] args) {
+        System.out.println(111);
         Cmd cmd = ParseCmd.parseCmd(args);
         if (cmd.isHelpFlag()) {
             System.out.println("Usage: java [-options] class [args...]");

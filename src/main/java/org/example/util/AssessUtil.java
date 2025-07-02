@@ -7,6 +7,9 @@ import org.example.constant.AccessFlagEnum;
  * @date 2024/3/10
  */
 public class AssessUtil {
+
+    private AssessUtil() {
+    }
     /**
      * 判断是否是final
      */
