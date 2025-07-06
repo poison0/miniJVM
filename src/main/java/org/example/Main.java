@@ -10,6 +10,7 @@ import org.example.rtda.JFrame;
 import org.example.rtda.LocalVars;
 import org.example.rtda.OperandStack;
 import org.example.rtda.heap.JClass;
+import org.example.rtda.heap.JClassLoader;
 import org.example.rtda.heap.JMethod;
 
 import java.util.LinkedList;
@@ -20,7 +21,6 @@ import java.util.LinkedList;
  */
 public class Main {
     public static void main(String[] args) {
-        System.out.println(111);
         Cmd cmd = ParseCmd.parseCmd(args);
         if (cmd.isHelpFlag()) {
             System.out.println("Usage: java [-options] class [args...]");
@@ -73,68 +73,25 @@ public class Main {
         try {
             // 读取class文件
             ClassPath classPath = new ClassPath(cmd.getXjreOption(), cmd.getCpOption());
-            byte[] bytes = classPath.readClass(cmd.getClassName());
 
-            LinkedList<Integer> list = new LinkedList<>();
-            for (byte aByte : bytes) {
-                int unsignedInt = Byte.toUnsignedInt(aByte);
-                list.add(unsignedInt);
-            };
-            // 解析class文件
-            ClassFile classFile = ClassReader.analyzeClassFile(list);
+            JClassLoader classLoader =  new JClassLoader(classPath);
 
-            JClass jClass = new JClass(classFile);
-            System.out.println(111);
-//            Method mainMethod = getMainMethod(classFile);
-//            if (mainMethod == null) {
-//                System.out.println("Main method not found in class " + cmd.getClassName());
-//                return;
-//            }
-//            Interpreter interpreter = new Interpreter();
-//            interpreter.interpret(mainMethod);
+            JClass jClass = classLoader.loadClass(cmd.getClassName());
+
+
+            JMethod mainMethod = jClass.getMainMethod();
+            if (mainMethod == null) {
+                System.out.println("Main method not found in class " + cmd.getClassName());
+                return;
+            }
+            Interpreter interpreter = new Interpreter();
+            interpreter.interpret(mainMethod);
 
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
-    private static Method getMainMethod(ClassFile classFile) {
-        Method[] methods = classFile.getMethods();
-        for (Method method : methods) {
-            String name = ConstantInfo.getUtf8(classFile.getConstantPool(), method.getNameIndex().toInteger());
-            String descriptor = ConstantInfo.getUtf8(classFile.getConstantPool(), method.getDescriptorIndex().toInteger());
-            if ("main".equals(name) && "([Ljava/lang/String;)V".equals(descriptor)) {
-                return method;
-            }
-        }
-        return null;
-    }
 
-    private static void print(ClassFile classFile) {
-        System.out.printf("version:%s.%s",classFile.getMajorVersion().toValue(), classFile.getMinorVersion().toValue());
-        System.out.println();
-        System.out.printf("constantPoolCount:%s",classFile.getConstantPoolCount().toValue());
-        System.out.println();
-        System.out.printf("accessFlags:%s",classFile.getAccessFlags().toHex());
-        System.out.println();
-        System.out.printf("thisClass:%s",classFile.getThisClass());
-        System.out.println();
-        System.out.printf("superClass:%s",classFile.getSuperClass());
-        System.out.println();
-        System.out.printf("interfacesCount:%s",classFile.getInterfacesCount().toValue());
-        System.out.println();
-        System.out.printf("fieldsCount:%s",classFile.getFieldsCount().toValue());
-        System.out.println();
-        for (Field field : classFile.getFields()) {
-            System.out.printf("     %s", ConstantInfo.getUtf8(classFile.getConstantPool(),field.getNameIndex().toInteger()));
-            System.out.println();
-        }
-        System.out.printf("methodCount:%s",classFile.getMethodsCount().toValue());
-        System.out.println();
-        for (Method method : classFile.getMethods()) {
-            System.out.printf("     %s", ConstantInfo.getUtf8(classFile.getConstantPool(),method.getNameIndex().toInteger()));
-            System.out.println();
-        }
-    }
 }

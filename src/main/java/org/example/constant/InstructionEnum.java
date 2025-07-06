@@ -1888,7 +1888,7 @@ public enum InstructionEnum implements Instruction {
                 case 'J' -> operandStack.pushLong(staticVars.getSlots()[slotId].getLong());
                 case 'D' -> operandStack.pushDouble(staticVars.getSlots()[slotId].getDouble());
                 case 'L', '[' -> operandStack.pushRef(staticVars.getSlots()[slotId].getRef());
-                default -> throw new RuntimeException("Invalid descriptor: " + descriptor);
+                default -> throw new IllegalArgumentException("Invalid descriptor: " + descriptor);
             }
         }
         private int index;
@@ -1915,17 +1915,17 @@ public enum InstructionEnum implements Instruction {
             int slotId = field.getSlotId();
             OperandStack operandStack = frame.getOperandStack();
             JObject ref = operandStack.popRef();
-            if (ref == null) {
-                throw new NullPointerException();
-            }
-            Slot[] slots = ref.getFields();
-            switch (descriptor.charAt(0)) {
-                case 'Z', 'B', 'C', 'S', 'I' -> slots[slotId].setInt(operandStack.popInt());
-                case 'F' -> slots[slotId].setFloat(operandStack.popFloat());
-                case 'J' -> slots[slotId].setLong(operandStack.popLong());
-                case 'D' -> slots[slotId].setDouble(operandStack.popDouble());
-                case 'L', '[' -> slots[slotId].setRef(operandStack.popRef());
-                default -> throw new RuntimeException("Invalid descriptor: " + descriptor);
+            if (ref != null) {
+//                throw new NullPointerException();
+                Slot[] slots = ref.getFields();
+                switch (descriptor.charAt(0)) {
+                    case 'Z', 'B', 'C', 'S', 'I' -> slots[slotId].setInt(operandStack.popInt());
+                    case 'F' -> slots[slotId].setFloat(operandStack.popFloat());
+                    case 'J' -> slots[slotId].setLong(operandStack.popLong());
+                    case 'D' -> slots[slotId].setDouble(operandStack.popDouble());
+                    case 'L', '[' -> slots[slotId].setRef(operandStack.popRef());
+                    default -> throw new IllegalArgumentException("Invalid descriptor: " + descriptor);
+                }
             }
         }
         private int index;
@@ -1946,17 +1946,16 @@ public enum InstructionEnum implements Instruction {
             int slotId = field.getSlotId();
             OperandStack operandStack = frame.getOperandStack();
             JObject ref = operandStack.popRef();
-            if (ref == null) {
-                throw new NullPointerException();
-            }
-            Slot[] slots = ref.getFields();
-            switch (descriptor.charAt(0)) {
-                case 'Z', 'B', 'C', 'S', 'I' -> operandStack.pushInt(slots[slotId].getInt());
-                case 'F' -> operandStack.pushFloat(slots[slotId].getFloat());
-                case 'J' -> operandStack.pushLong(slots[slotId].getLong());
-                case 'D' -> operandStack.pushDouble(slots[slotId].getDouble());
-                case 'L', '[' -> operandStack.pushRef(slots[slotId].getRef());
-                default -> throw new RuntimeException("Invalid descriptor: " + descriptor);
+            if (ref != null) {
+                Slot[] slots = ref.getFields();
+                switch (descriptor.charAt(0)) {
+                    case 'Z', 'B', 'C', 'S', 'I' -> operandStack.pushInt(slots[slotId].getInt());
+                    case 'F' -> operandStack.pushFloat(slots[slotId].getFloat());
+                    case 'J' -> operandStack.pushLong(slots[slotId].getLong());
+                    case 'D' -> operandStack.pushDouble(slots[slotId].getDouble());
+                    case 'L', '[' -> operandStack.pushRef(slots[slotId].getRef());
+                    default -> throw new RuntimeException("Invalid descriptor: " + descriptor);
+                }
             }
         }
         private int index;
@@ -2066,6 +2065,18 @@ public enum InstructionEnum implements Instruction {
 
         private int index;
     },
+    INVOKESPECIAL("invokespecial", 0xb7){
+        // todo 暂时不实现
+        @Override
+        public void fetchOperands(ByteCodeReader reader) {
+            this.index = reader.readUint16();
+        }
+        @Override
+        public void execute(JFrame frame) {
+            frame.getOperandStack().popRef();
+        }
+        private int index;
+    }
 
     ;
     // 助记符

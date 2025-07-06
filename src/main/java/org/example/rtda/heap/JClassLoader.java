@@ -38,7 +38,7 @@ public class JClassLoader {
         if (classMap.containsKey(name)){
             return classMap.get(name);
         }
-        //todo 加载非数据类型
+        //todo 加载非数组类型
         return loadNonArrayClass(name);
     }
 
