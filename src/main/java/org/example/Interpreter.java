@@ -1,10 +1,5 @@
 package org.example;
 
-import org.example.classfile.ClassFieldType;
-import org.example.classfile.classfield.Method;
-import org.example.classfile.classfield.attributes.Attribute;
-import org.example.classfile.classfield.attributes.Code;
-import org.example.constant.AttributeEnum;
 import org.example.constant.InstructionEnum;
 import org.example.instructions.base.ByteCodeReader;
 import org.example.rtda.JFrame;
