@@ -2,7 +2,6 @@ package org.example.rtda.heap.constantpool;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.example.rtda.heap.JClass;
 import org.example.rtda.heap.JConstantPool;
 import org.example.rtda.heap.JMethod;
 
