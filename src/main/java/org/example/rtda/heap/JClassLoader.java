@@ -138,8 +138,11 @@ public class JClassLoader {
                     vars.setDouble(slotId, d);
                 }
                 case "Ljava/lang/String;" -> {
+                    //todo 字符串之后再说
                 }
-                //todo 字符串之后再说
+                default -> {
+                    //todo 其他类型之后再说
+                }
             }
         }
     }
@@ -221,7 +224,7 @@ public class JClassLoader {
            return classPath.readClass(name);
         } catch (Exception e) {
             System.out.printf("class read error:%s\n",e.getMessage());
-            return null;
+            return new byte[0];
         }
     }
 }

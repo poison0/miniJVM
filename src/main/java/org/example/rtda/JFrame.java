@@ -4,6 +4,7 @@ import lombok.Data;
 import org.example.rtda.heap.JMethod;
 
 /**
+ * 虚拟机栈的一个栈帧
  * @auth nss
  * @date 2024/1/14
  */
@@ -16,16 +17,16 @@ public class JFrame {
     //下一个栈帧指针
     private JFrame lower;
     //所属线程
-    private JThread JThread;
+    private JThread jThread;
     //pc寄存器
     private int nextPC;
 
     private JMethod method;
 
-    public JFrame(JThread JThread,JMethod method) {
+    public JFrame(JThread jThread,JMethod method) {
         this.localVars = new LocalVars(method.getMaxLocals());
         this.operandStack = new OperandStack(method.getMaxStack());
-        this.JThread = JThread;
+        this.jThread = jThread;
         this.method = method;
     }
 }
