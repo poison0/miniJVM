@@ -1,7 +1,7 @@
 package org.example.rtda.heap;
 
 
-import org.example.rtda.heap.constantpool.MethodRef;
+import org.example.rtda.heap.constantpool.InterfaceMethodRef;
 
 /**
  * 接口方法符号引用
@@ -16,7 +16,7 @@ public class CpInterfaceMethodRef {
      * @param methodRef 方法引用对象，包含需要解析的方法信息
      * @return 解析后的方法对象(JMethod)
      */
-    public JMethod resolveInterfaceMethod(MethodRef methodRef) {
+    public static JMethod resolveInterfaceMethod(InterfaceMethodRef methodRef) {
         // 检查方法是否已解析，未解析则进行解析
         if (methodRef.getMethod() == null) {
             resolveInterfaceMethodRef(methodRef);
@@ -25,7 +25,7 @@ public class CpInterfaceMethodRef {
         return methodRef.getMethod();
     }
 
-    private void resolveInterfaceMethodRef(MethodRef methodRef) {
+    private static void resolveInterfaceMethodRef(InterfaceMethodRef methodRef) {
         JClass d = methodRef.getConstantPool().getClazz();
         JClass c = methodRef.resolvedClass();
         if (c.isInterface()) {
@@ -41,7 +41,7 @@ public class CpInterfaceMethodRef {
         methodRef.setMethod(method);
     }
 
-    private JMethod lookupInterfaceMethod(JClass iFace, String name, String descriptor) {
+    private static JMethod lookupInterfaceMethod(JClass iFace, String name, String descriptor) {
         for (JMethod method : iFace.getMethods()) {
             if(method.getName().equals(name)&&method.getDescriptor().equals(descriptor)){
                 return method;

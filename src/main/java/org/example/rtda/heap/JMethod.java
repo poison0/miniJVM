@@ -7,6 +7,7 @@ import org.example.classfile.classfield.attributes.Attribute;
 import org.example.classfile.classfield.attributes.Code;
 import org.example.classfile.classfield.constantpool.ConstantPool;
 import org.example.constant.AttributeEnum;
+import org.example.util.AssessUtil;
 
 /**
  * 方法
@@ -70,5 +71,9 @@ public class JMethod extends JField{
         if (!isStatic()) {
             this.argSlotCount++;
         }
+    }
+
+    public boolean isAbstract() {
+        return AssessUtil.isAbstract(getAccessFlags());
     }
 }

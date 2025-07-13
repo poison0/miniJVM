@@ -79,4 +79,16 @@ public class JField {
         }
         return d == c;
     }
+
+    public boolean isProtected() {
+        return AssessUtil.isProtected(accessFlags);
+    }
+
+    public boolean isPrivate() {
+        return AssessUtil.isPrivate(accessFlags);
+    }
+
+    public boolean isPublic() {
+        return AssessUtil.isPublic(accessFlags);
+    }
 }

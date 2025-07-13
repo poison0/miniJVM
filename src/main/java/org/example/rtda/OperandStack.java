@@ -89,4 +89,13 @@ public class OperandStack {
         size--;
         return slots[size];
     }
+
+    /**
+     * 从操作数栈顶部获取指定偏移量的引用对象
+     * @param index 从栈顶开始的偏移量（0表示栈顶元素）
+     * @return 栈中对应位置的JObject引用对象
+     */
+    public JObject GetRefFromTop(int index) {
+        return slots[size - index -1].getRef();
+    }
 }

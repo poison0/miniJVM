@@ -26,4 +26,7 @@ public class JThread {
         return this.stack.top();
     }
 
+    public boolean isStackEmpty() {
+        return this.stack.isEmpty();
+    }
 }

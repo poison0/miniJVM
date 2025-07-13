@@ -162,9 +162,17 @@ public class JClass {
         }
     }
 
-    private boolean isImplements(JClass jClass) {
-        for (JClass superClass = this.superClass; superClass != null; superClass = superClass.superClass) {
-            for (JClass r : superClass.interfaces) {
+    /**
+     * 检查当前类是否实现了指定的接口
+     * @param jClass 要检查的接口类
+     * @return 如果当前类或其父类实现了指定接口或其子接口则返回true，否则返回false
+     */
+    public boolean isImplements(JClass jClass) {
+        // 遍历当前类及其所有父类
+        for (JClass sc = this.superClass; sc != null; sc = sc.superClass) {
+            // 检查每个父类实现的接口
+            for (JClass r : sc.interfaces) {
+                // 如果找到匹配的接口或子接口
                 if (r == jClass || r.isSubInterfaceOf(jClass)) {
                     return true;
                 }
@@ -191,4 +199,25 @@ public class JClass {
         return null;
     }
 
+    /**
+     * 判断当前类是否是给定类的超类
+     * @param currentClass 要检查的目标类
+     * @return 如果当前类是目标类的超类则返回true，否则返回false
+     */
+    public boolean isSuperClassOf(JClass currentClass) {
+        // 如果目标类就是当前类本身，直接返回true
+        if (currentClass == this) {
+            return true;
+        }
+        // 如果目标类没有父类了，说明当前类不在其继承链上
+        if (currentClass.superClass == null) {
+            return false;
+        }
+        // 递归检查目标类的父类
+        return isSuperClassOf(currentClass.superClass);
+    }
+
+    public boolean isSuper() {
+        return AssessUtil.isSuper(accessFlags);
+    }
 }

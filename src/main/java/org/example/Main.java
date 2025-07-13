@@ -1,10 +1,5 @@
 package org.example;
 
-import org.example.classfile.ClassReader;
-import org.example.classfile.classfield.ClassFile;
-import org.example.classfile.classfield.Field;
-import org.example.classfile.classfield.Method;
-import org.example.classfile.classfield.constantpool.ConstantInfo;
 import org.example.classpath.ClassPath;
 import org.example.rtda.JFrame;
 import org.example.rtda.LocalVars;
@@ -12,8 +7,6 @@ import org.example.rtda.OperandStack;
 import org.example.rtda.heap.JClass;
 import org.example.rtda.heap.JClassLoader;
 import org.example.rtda.heap.JMethod;
-
-import java.util.LinkedList;
 
 /**
  * @auth nss
@@ -85,7 +78,7 @@ public class Main {
                 return;
             }
             Interpreter interpreter = new Interpreter();
-            interpreter.interpret(mainMethod);
+            interpreter.interpret(mainMethod,true);
 
 
         } catch (Exception e) {

@@ -12,7 +12,7 @@ import org.example.rtda.heap.JMethod;
  */
 public class Interpreter {
 
-    public void interpret(JMethod method) {
+    public void interpret(JMethod method,boolean logInst) {
         //创建线程
         JThread thread = new JThread();
         //创建栈帧
@@ -20,10 +20,9 @@ public class Interpreter {
         //将栈帧推入线程
         thread.pushFrame(frame);
         //获取指令
-        loop(thread,method.getCode());
-
+        loop(thread,method.getCode(),logInst);
     }
-    public void loop(JThread thread,byte[] codeBytes) {
+    public void loop(JThread thread,byte[] codeBytes,boolean logInst) {
         JFrame frame = thread.popFrame();
         ByteCodeReader reader = new ByteCodeReader(codeBytes,frame.getNextPC());
         try{
@@ -34,15 +33,23 @@ public class Interpreter {
                 InstructionEnum instruction = InstructionEnum.getInstructionEnum(opcode);
                 instruction.fetchOperands(reader);
                 frame.setNextPC(reader.getPc());
-
                 System.out.println("pc:"+reader.getPc()+" opcode:"+opcode+" instruction:"+instruction.getName());
+                if (logInst) {
+                    logInst(frame,instruction);
+                }
                 instruction.execute(frame);
-                // todo 需要添加return指令
+                if (thread.isStackEmpty()) {
+                    break;
+                }
             }
         }catch (Exception e) {
             e.printStackTrace();
             System.out.println("LocalVars:"+frame.getLocalVars());
             System.out.println("OperandStack:"+frame.getOperandStack());
         }
+    }
+
+    private void logInst(JFrame frame, InstructionEnum instruction) {
+        System.out.println(frame.getClass().getName()+"."+frame.getMethod().getName()+"() #"+frame.getJThread().getPc()+" "+instruction+" "+instruction+"\n");
     }
 }

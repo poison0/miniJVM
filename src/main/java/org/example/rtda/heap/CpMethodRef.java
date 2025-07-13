@@ -25,7 +25,7 @@ public class CpMethodRef {
      * @throws RuntimeException 如果方法解析失败会抛出运行时异常
      * @see #resolveMethodRef(MethodRef)
      */
-    public JMethod resolveMethod(MethodRef methodRef) {
+    public static JMethod resolveMethod(MethodRef methodRef) {
         // 检查方法是否已解析，未解析则进行解析
         if (methodRef.getMethod() == null) {
             resolveMethodRef(methodRef);
@@ -34,7 +34,7 @@ public class CpMethodRef {
         return methodRef.getMethod();
     }
 
-    private void resolveMethodRef(MethodRef methodRef) {
+    private static void resolveMethodRef(MethodRef methodRef) {
         JClass d = methodRef.getConstantPool().getClazz();
         JClass c = methodRef.resolvedClass();
         if (c.isInterface()) {
@@ -50,7 +50,7 @@ public class CpMethodRef {
         methodRef.setMethod(method);
     }
 
-    private JMethod lookupMethod(JClass c, String name, String descriptor) {
+    private static JMethod lookupMethod(JClass c, String name, String descriptor) {
         JMethod method = MethodLookup.lookupMethodInClass(c,name,descriptor);
         if (method == null) {
             method = MethodLookup.lookupMethodInInterfaces(c.getInterfaces(),name,descriptor);

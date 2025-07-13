@@ -51,14 +51,7 @@ public class MethodDescriptor {
         while (index < params.length()) {
             char c = params.charAt(index);
             switch (c) {
-                case 'B': // byte
-                case 'C': // char
-                case 'D': // double
-                case 'F': // float
-                case 'I': // int
-                case 'J': // long
-                case 'S': // short
-                case 'Z': // boolean
+                case 'B','C','D','F','I','J','S','Z':
                     types.add(String.valueOf(c));
                     index++;
                     break;

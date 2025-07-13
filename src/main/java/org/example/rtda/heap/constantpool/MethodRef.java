@@ -2,6 +2,7 @@ package org.example.rtda.heap.constantpool;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.example.rtda.heap.CpMethodRef;
 import org.example.rtda.heap.JConstantPool;
 import org.example.rtda.heap.JMethod;
 
@@ -22,5 +23,9 @@ public class MethodRef extends SymRef{
         super(constantPool, className);
         this.name = name;
         this.descriptor = descriptor;
+    }
+
+    public JMethod resolvedMethod() {
+        return CpMethodRef.resolveMethod(this);
     }
 }

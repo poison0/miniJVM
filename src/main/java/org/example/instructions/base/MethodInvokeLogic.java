@@ -13,17 +13,17 @@ import org.example.rtda.heap.JMethod;
 public class MethodInvokeLogic {
 
 
-    public void invokeMethod(JFrame jFrame, JMethod method) {
+    public static void invokeMethod(JFrame jFrame, JMethod method) {
         JThread thread = jFrame.getJThread();
         //创建栈帧
-        JFrame frame = new JFrame(thread,method);
+        JFrame newFrame = new JFrame(thread,method);
         //将栈帧推入线程
-        thread.pushFrame(frame);
+        thread.pushFrame(newFrame);
         int argSlotCount = method.getArgSlotCount();
         if (argSlotCount > 0) {
             for (int i = argSlotCount; i > 0; i--) {
                 Slot slot = jFrame.getOperandStack().popSlot();
-                frame.getLocalVars().setSlot(i,slot);
+                newFrame.getLocalVars().setSlot(i,slot);
             }
         }
 

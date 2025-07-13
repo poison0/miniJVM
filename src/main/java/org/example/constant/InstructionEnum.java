@@ -3,15 +3,13 @@ package org.example.constant;
 import lombok.Getter;
 import org.example.instructions.base.ByteCodeReader;
 import org.example.instructions.base.Instruction;
+import org.example.instructions.base.MethodInvokeLogic;
 import org.example.rtda.JFrame;
 import org.example.rtda.LocalVars;
 import org.example.rtda.OperandStack;
-import org.example.rtda.heap.*;
 import org.example.rtda.Slot;
-import org.example.rtda.heap.constantpool.DoubleInfo;
-import org.example.rtda.heap.constantpool.FloatInfo;
-import org.example.rtda.heap.constantpool.IntInfo;
-import org.example.rtda.heap.constantpool.LongInfo;
+import org.example.rtda.heap.*;
+import org.example.rtda.heap.constantpool.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -1005,7 +1003,7 @@ public enum InstructionEnum implements Instruction {
         @Override
         public void execute(JFrame frame) {
             int val = frame.getOperandStack().popInt();
-            frame.getOperandStack().pushFloat((float) val);
+            frame.getOperandStack().pushFloat(val);
         }
     },
     I2D("i2d", 0x87) {
@@ -1026,7 +1024,7 @@ public enum InstructionEnum implements Instruction {
         @Override
         public void execute(JFrame frame) {
             long val = frame.getOperandStack().popLong();
-            frame.getOperandStack().pushFloat((float) val);
+            frame.getOperandStack().pushFloat(val);
         }
     },
     L2D("l2d", 0x8a) {
@@ -1123,8 +1121,6 @@ public enum InstructionEnum implements Instruction {
                 frame.getOperandStack().pushInt(1);
             } else if (val1 == val2) {
                 frame.getOperandStack().pushInt(0);
-            } else if (val1 < val2) {
-                frame.getOperandStack().pushInt(-1);
             } else {
                 frame.getOperandStack().pushInt(-1);
             }
@@ -1139,8 +1135,6 @@ public enum InstructionEnum implements Instruction {
                 frame.getOperandStack().pushInt(1);
             } else if (val1 == val2) {
                 frame.getOperandStack().pushInt(0);
-            } else if (val1 < val2) {
-                frame.getOperandStack().pushInt(-1);
             } else {
                 frame.getOperandStack().pushInt(1);
             }
@@ -1155,8 +1149,6 @@ public enum InstructionEnum implements Instruction {
                 frame.getOperandStack().pushInt(1);
             } else if (val1 == val2) {
                 frame.getOperandStack().pushInt(0);
-            } else if (val1 < val2) {
-                frame.getOperandStack().pushInt(-1);
             } else {
                 frame.getOperandStack().pushInt(-1);
             }
@@ -1171,8 +1163,6 @@ public enum InstructionEnum implements Instruction {
                 frame.getOperandStack().pushInt(1);
             } else if (val1 == val2) {
                 frame.getOperandStack().pushInt(0);
-            } else if (val1 < val2) {
-                frame.getOperandStack().pushInt(-1);
             } else {
                 frame.getOperandStack().pushInt(1);
             }
@@ -1838,12 +1828,10 @@ public enum InstructionEnum implements Instruction {
             if (!field.isStatic()) {
                 throw new IncompatibleClassChangeError();
             }
-            if (field.isFinal()) {
-                //只有初始化方法才能给final字段赋值
-                if (!frame.getMethod().getName().equals("<clinit>") || frame.getMethod().getClazz() != clazz) {
+            if (field.isFinal() && (!frame.getMethod().getName().equals("<clinit>") || frame.getMethod().getClazz() != clazz)) {
                     throw new IllegalAccessError();
-                }
             }
+
             String descriptor = field.getDescriptor();
             int slotId = field.getSlotId();
             LocalVars staticVars = clazz.getStaticVars();
@@ -1905,18 +1893,15 @@ public enum InstructionEnum implements Instruction {
             if (field.isStatic()) {
                 throw new IncompatibleClassChangeError();
             }
-            if (field.isFinal()) {
-                //final字段只能在构造函数中初始化
-                if (!frame.getMethod().getName().equals("<init>") || frame.getMethod().getClazz() != field.getClazz()) {
-                    throw new IllegalAccessError();
-                }
+            if (field.isFinal() && (!frame.getMethod().getName().equals("<init>") || frame.getMethod().getClazz() != field.getClazz())) {
+                    throw new RuntimeException("java.lang.IllegalAccessError");
             }
+
             String descriptor = field.getDescriptor();
             int slotId = field.getSlotId();
             OperandStack operandStack = frame.getOperandStack();
             JObject ref = operandStack.popRef();
             if (ref != null) {
-//                throw new NullPointerException();
                 Slot[] slots = ref.getFields();
                 switch (descriptor.charAt(0)) {
                     case 'Z', 'B', 'C', 'S', 'I' -> slots[slotId].setInt(operandStack.popInt());
@@ -2066,18 +2051,122 @@ public enum InstructionEnum implements Instruction {
         private int index;
     },
     INVOKESPECIAL("invokespecial", 0xb7){
-        // todo 暂时不实现
         @Override
         public void fetchOperands(ByteCodeReader reader) {
             this.index = reader.readUint16();
         }
         @Override
         public void execute(JFrame frame) {
-            frame.getOperandStack().popRef();
+            JClass currentClass = frame.getMethod().getClazz();
+            JConstantPool constantPool = currentClass.getConstantPool();
+            MethodRef methodRef = (MethodRef)constantPool.getConstants()[this.index];
+            JClass resolvedClass = methodRef.resolvedClass();
+            JMethod resolvedMethod = methodRef.resolvedMethod();
+            if (resolvedMethod.getName().equals("<init>") && resolvedMethod.getClazz() != resolvedClass) {
+                throw new RuntimeException("java.lang.IllegalAccessError");
+            }
+            if (resolvedMethod.isStatic()) {
+                throw new RuntimeException("java.lang.IncompatibleClassChangeError");
+            }
+            JObject ref = frame.getOperandStack().GetRefFromTop(resolvedMethod.getArgSlotCount());
+            if (ref == null) {
+                throw new RuntimeException("java.lang.NullPointerException");
+            }
+            if (resolvedMethod.isProtected() && resolvedMethod.getClazz().isSuperClassOf(currentClass) && resolvedMethod.getClazz().getPackageName().equals(currentClass.getPackageName()) &&  ref.getClazz() != currentClass && !ref.getClazz().isSubClassOf(currentClass)) {
+                throw new RuntimeException("java.lang.IllegalAccessError");
+            }
+            JMethod methodToBeInvoked = resolvedMethod;
+            if (currentClass.isSuper() && resolvedClass.isSuperClassOf(currentClass) && !resolvedMethod.getName().equals("<init>")) {
+                methodToBeInvoked = MethodLookup.lookupMethodInClass(currentClass.getSuperClass(), methodRef.getName(), methodRef.getDescriptor());
+            }
+            if (methodToBeInvoked == null || methodToBeInvoked.isAbstract()) {
+                throw new RuntimeException("java.lang.AbstractMethodError");
+            }
+            MethodInvokeLogic.invokeMethod(frame,methodToBeInvoked);
         }
         private int index;
+    },
+    /**
+     * 调用静态方法
+     */
+    INVOKESTATIC("invokestatic",0xb8) {
+        private int index;
+        @Override
+        public void fetchOperands(ByteCodeReader reader) {
+            this.index = reader.readUint16();
+        }
+        @Override
+        public void execute(JFrame frame) {
+            JConstantPool constantPool = frame.getMethod().getClazz().getConstantPool();
+            MethodRef methodRef = (MethodRef)constantPool.getConstants()[this.index];
+            JMethod method = methodRef.resolvedMethod();
+            if (!method.isStatic()) {
+                throw new RuntimeException("java.lang.IncompatibleClassChangeError");
+            }
+            MethodInvokeLogic.invokeMethod(frame,method);
+        }
+    },
+    INVOKEVIRTUAL("invokevirtual", 0xb6){
+        private int index;
+        @Override
+        public void fetchOperands(ByteCodeReader reader) {
+            this.index = reader.readUint16();
+        }
+        @Override
+        public void execute(JFrame frame) {
+            JClass currentClass = frame.getMethod().getClazz();
+            JConstantPool constantPool = currentClass.getConstantPool();
+            MethodRef methodRef = (MethodRef)constantPool.getConstants()[this.index];
+            JMethod resolvedMethod = methodRef.resolvedMethod();
+            if (resolvedMethod.isStatic()) {
+                throw new RuntimeException("java.lang.IncompatibleClassChangeError");
+            }
+            JObject ref = frame.getOperandStack().GetRefFromTop(resolvedMethod.getArgSlotCount() - 1);
+            if (ref == null) {
+                throw new RuntimeException("java.lang.NullPointerException");
+            }
+            if (resolvedMethod.isProtected() && resolvedMethod.getClazz().isSuperClassOf(currentClass) && resolvedMethod.getClazz().getPackageName().equals(currentClass.getPackageName()) &&  ref.getClazz() != currentClass && !ref.getClazz().isSubClassOf(currentClass)) {
+                throw new RuntimeException("java.lang.IllegalAccessError");
+            }
+            JMethod methodToBeInvoked = MethodLookup.lookupMethodInClass(ref.getClazz(), methodRef.getName(), methodRef.getDescriptor());
+            if (methodToBeInvoked == null || methodToBeInvoked.isAbstract()) {
+                throw new RuntimeException("java.lang.AbstractMethodError");
+            }
+            MethodInvokeLogic.invokeMethod(frame,methodToBeInvoked);
+        }
+    },
+    INVOKEINTERFACE("invokeinterface", 0xb9) {
+        private int index;
+        @Override
+        public void fetchOperands(ByteCodeReader reader) {
+            this.index = reader.readUint16();
+        }
+        @Override
+        public void execute(JFrame frame) {
+            JClass currentClass = frame.getMethod().getClazz();
+            JConstantPool constantPool = currentClass.getConstantPool();
+            InterfaceMethodRef methodRef = (InterfaceMethodRef)constantPool.getConstants()[this.index];
+            JMethod resolvedMethod = methodRef.resolvedInterfaceMethod();
+            if (resolvedMethod.isStatic() || resolvedMethod.isPrivate()) {
+                throw new RuntimeException("java.lang.IncompatibleClassChangeError");
+            }
+            JObject ref = frame.getOperandStack().GetRefFromTop(resolvedMethod.getArgSlotCount() - 1);
+            if (ref == null) {
+                throw new RuntimeException("java.lang.NullPointerException");
+            }
+            if (!ref.getClazz().isImplements(methodRef.resolvedClass())) {
+                throw new RuntimeException("java.lang.IncompatibleClassChangeError");
+            }
+            JMethod methodToBeInvoked = MethodLookup.lookupMethodInClass(ref.getClazz(), methodRef.getName(), methodRef.getDescriptor());
+            if (methodToBeInvoked == null || methodToBeInvoked.isAbstract()) {
+                throw new RuntimeException("java.lang.AbstractMethodError");
+            }
+            if (!methodToBeInvoked.isPublic()) {
+                throw new RuntimeException("java.lang.IllegalAccessError");
+            }
+            MethodInvokeLogic.invokeMethod(frame,methodToBeInvoked);
+        }
     }
-
     ;
     // 助记符
     private final String name;
