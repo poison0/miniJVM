@@ -96,6 +96,6 @@ public class OperandStack {
      * @return 栈中对应位置的JObject引用对象
      */
     public JObject GetRefFromTop(int index) {
-        return slots[size - index -1].getRef();
+        return slots[size - index].getRef();
     }
 }

@@ -23,25 +23,22 @@ public class Interpreter {
         loop(thread,method.getCode(),logInst);
     }
     public void loop(JThread thread,byte[] codeBytes,boolean logInst) {
-        JFrame frame = thread.popFrame();
+        JFrame frame = thread.currentFrame();
         ByteCodeReader reader = new ByteCodeReader(codeBytes,frame.getNextPC());
         try{
-            while (true) {
+            do {
                 reader.setPc(frame.getNextPC());
                 thread.setPc(frame.getNextPC());
                 int opcode = reader.readUint8();
                 InstructionEnum instruction = InstructionEnum.getInstructionEnum(opcode);
                 instruction.fetchOperands(reader);
                 frame.setNextPC(reader.getPc());
-                System.out.println("pc:"+reader.getPc()+" opcode:"+opcode+" instruction:"+instruction.getName());
+                System.out.println("pc:" + reader.getPc() + " opcode:" + opcode + " instruction:" + instruction.getName());
                 if (logInst) {
-                    logInst(frame,instruction);
+                    logInst(frame, instruction);
                 }
                 instruction.execute(frame);
-                if (thread.isStackEmpty()) {
-                    break;
-                }
-            }
+            } while (!thread.isStackEmpty());
         }catch (Exception e) {
             e.printStackTrace();
             System.out.println("LocalVars:"+frame.getLocalVars());
