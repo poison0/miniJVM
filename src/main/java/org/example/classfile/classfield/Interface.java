@@ -1,13 +1,15 @@
 package org.example.classfile.classfield;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.classfile.ClassFieldType;
 
 /**
  * @auth nss
  * @date 2024/1/2
  */
-@Data
+@Getter
+@Setter
 public class Interface {
     /**
      * 指向常量池的索引

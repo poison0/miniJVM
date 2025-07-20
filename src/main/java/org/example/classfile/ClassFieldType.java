@@ -1,6 +1,7 @@
 package org.example.classfile;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.constant.ClassFieldTypeEnum;
 
 import java.util.Arrays;
@@ -11,7 +12,8 @@ import java.util.stream.Collectors;
  * @auth nss
  * @date 2024/1/2
  */
-@Data
+@Getter
+@Setter
 public class ClassFieldType {
 
     protected Integer[] bytes;

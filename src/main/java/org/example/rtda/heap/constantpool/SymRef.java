@@ -1,6 +1,7 @@
 package org.example.rtda.heap.constantpool;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.rtda.heap.JClass;
 import org.example.rtda.heap.JConstant;
 import org.example.rtda.heap.JConstantPool;
@@ -9,7 +10,8 @@ import org.example.rtda.heap.JConstantPool;
  * @auth nss
  * @date 2024/3/14
  */
-@Data
+@Getter
+@Setter
 public class SymRef implements JConstant {
     /**
      * 运行时常量池

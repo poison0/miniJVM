@@ -1,6 +1,7 @@
 package org.example.rtda.heap;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.classfile.classfield.Field;
 import org.example.classfile.classfield.attributes.Attribute;
 import org.example.classfile.classfield.attributes.ConstantValue;
@@ -13,7 +14,8 @@ import org.example.util.AssessUtil;
  * @auth nss
  * @date 2024/1/31
  */
-@Data
+@Getter
+@Setter
 public class JField {
     /**
      * 访问标志

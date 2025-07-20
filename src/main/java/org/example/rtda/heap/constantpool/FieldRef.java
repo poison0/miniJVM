@@ -1,7 +1,7 @@
 package org.example.rtda.heap.constantpool;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.rtda.heap.JClass;
 import org.example.rtda.heap.JConstantPool;
 import org.example.rtda.heap.JField;
@@ -11,8 +11,8 @@ import org.example.rtda.heap.JField;
  * @auth nss
  * @date 2024/3/14
  */
-@EqualsAndHashCode(callSuper = true)
-@Data
+@Getter
+@Setter
 public class FieldRef extends SymRef{
 
     private String name;

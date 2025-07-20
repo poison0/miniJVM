@@ -1,14 +1,16 @@
 package org.example.rtda;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.example.rtda.heap.JObject;
 
 /**
  * @auth nss
  * @date 2024/1/14
  */
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class Slot {
     //存放基本类型数据

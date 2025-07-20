@@ -1,12 +1,14 @@
 package org.example.rtda;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @auth nss
  * @date 2024/1/14
  */
-@Data
+@Getter
+@Setter
 public class JThread {
     //pc寄存器
     private int pc;

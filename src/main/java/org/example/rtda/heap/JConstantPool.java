@@ -1,6 +1,7 @@
 package org.example.rtda.heap;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.classfile.classfield.constantpool.*;
 import org.example.rtda.heap.constantpool.*;
 
@@ -9,7 +10,8 @@ import org.example.rtda.heap.constantpool.*;
  * @auth nss
  * @date 2024/1/31
  */
-@Data
+@Getter
+@Setter
 public class JConstantPool {
 
     private JConstant[] constants;

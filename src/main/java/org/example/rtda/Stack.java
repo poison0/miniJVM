@@ -1,13 +1,15 @@
 package org.example.rtda;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 栈
  * @auth nss
  * @date 2024/1/14
  */
-@Data
+@Getter
+@Setter
 public class Stack {
     private int maxSize;
     private int size;

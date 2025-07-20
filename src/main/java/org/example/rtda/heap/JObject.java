@@ -1,14 +1,16 @@
 package org.example.rtda.heap;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.rtda.Slot;
 
 /**
  * @auth nss
  * @date 2024/1/14
  */
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 public class JObject {
     private JClass clazz;

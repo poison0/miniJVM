@@ -1,7 +1,7 @@
 package org.example.rtda.heap.constantpool;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.rtda.heap.CpMethodRef;
 import org.example.rtda.heap.JConstantPool;
 import org.example.rtda.heap.JMethod;
@@ -11,8 +11,8 @@ import org.example.rtda.heap.JMethod;
  * @auth nss
  * @date 2024/4/18
  */
-@EqualsAndHashCode(callSuper = true)
-@Data
+@Getter
+@Setter
 public class MethodRef extends SymRef{
 
     private String name;

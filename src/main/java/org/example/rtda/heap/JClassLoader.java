@@ -1,6 +1,7 @@
 package org.example.rtda.heap;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.classfile.ClassReader;
 import org.example.classfile.classfield.ClassFile;
 import org.example.classpath.ClassPath;
@@ -14,7 +15,8 @@ import java.util.Map;
  * @auth nss
  * @date 2024/1/31
  */
-@Data
+@Getter
+@Setter
 public class JClassLoader {
 
     /**
@@ -53,7 +55,6 @@ public class JClassLoader {
         JClass clazz = defineClass(data);
         //链接
         link(clazz);
-        System.out.printf("[Loaded %s from %s]\n",name,classPath);
         return clazz;
     }
 

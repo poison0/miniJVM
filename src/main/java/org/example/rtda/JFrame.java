@@ -1,6 +1,7 @@
 package org.example.rtda;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.rtda.heap.JMethod;
 
 /**
@@ -8,7 +9,8 @@ import org.example.rtda.heap.JMethod;
  * @auth nss
  * @date 2024/1/14
  */
-@Data
+@Getter
+@Setter
 public class JFrame {
     //局部变量表
     private LocalVars localVars;
@@ -28,5 +30,12 @@ public class JFrame {
         this.operandStack = new OperandStack(method.getMaxStack());
         this.jThread = jThread;
         this.method = method;
+    }
+
+    /**
+     * 下一条指令的pc使用当前指令，当前指令需要再执行一次
+     */
+    public void revertNextPc() {
+        this.nextPC = this.jThread.getPc();
     }
 }

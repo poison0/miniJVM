@@ -2,6 +2,7 @@ package org.example.constant;
 
 import lombok.Getter;
 import org.example.instructions.base.ByteCodeReader;
+import org.example.instructions.base.ClassInvokeLogic;
 import org.example.instructions.base.Instruction;
 import org.example.instructions.base.MethodInvokeLogic;
 import org.example.rtda.JFrame;
@@ -1101,8 +1102,8 @@ public enum InstructionEnum implements Instruction {
     L_CMP("lcmp", 0x94) {
         @Override
         public void execute(JFrame frame) {
-            long val1 = frame.getOperandStack().popLong();
             long val2 = frame.getOperandStack().popLong();
+            long val1 = frame.getOperandStack().popLong();
             if (val1 > val2) {
                 frame.getOperandStack().pushInt(1);
             } else if (val1 == val2) {
@@ -1115,8 +1116,8 @@ public enum InstructionEnum implements Instruction {
     F_CMPL("fcmpl", 0x95) {
         @Override
         public void execute(JFrame frame) {
-            float val1 = frame.getOperandStack().popFloat();
             float val2 = frame.getOperandStack().popFloat();
+            float val1 = frame.getOperandStack().popFloat();
             if (val1 > val2) {
                 frame.getOperandStack().pushInt(1);
             } else if (val1 == val2) {
@@ -1129,8 +1130,8 @@ public enum InstructionEnum implements Instruction {
     F_CMPG("fcmpg", 0x96) {
         @Override
         public void execute(JFrame frame) {
-            float val1 = frame.getOperandStack().popFloat();
             float val2 = frame.getOperandStack().popFloat();
+            float val1 = frame.getOperandStack().popFloat();
             if (val1 > val2) {
                 frame.getOperandStack().pushInt(1);
             } else if (val1 == val2) {
@@ -1143,8 +1144,8 @@ public enum InstructionEnum implements Instruction {
     D_CMPL("dcmpl", 0x97) {
         @Override
         public void execute(JFrame frame) {
-            double val1 = frame.getOperandStack().popDouble();
             double val2 = frame.getOperandStack().popDouble();
+            double val1 = frame.getOperandStack().popDouble();
             if (val1 > val2) {
                 frame.getOperandStack().pushInt(1);
             } else if (val1 == val2) {
@@ -1157,8 +1158,8 @@ public enum InstructionEnum implements Instruction {
     D_CMPG("dcmpg", 0x98) {
         @Override
         public void execute(JFrame frame) {
-            double val1 = frame.getOperandStack().popDouble();
             double val2 = frame.getOperandStack().popDouble();
+            double val1 = frame.getOperandStack().popDouble();
             if (val1 > val2) {
                 frame.getOperandStack().pushInt(1);
             } else if (val1 == val2) {
@@ -1469,41 +1470,46 @@ public enum InstructionEnum implements Instruction {
     I_RETURN("ireturn", 0xac) {
         @Override
         public void execute(JFrame frame) {
-            int val = frame.getOperandStack().popInt();
-            JFrame invokerFrame = frame.getJThread().popFrame();
-            invokerFrame.getOperandStack().pushInt(val);
+            JFrame currentFrame = frame.getJThread().popFrame();
+            JFrame invokerFrame = frame.getJThread().currentFrame();
+            int retInt = currentFrame.getOperandStack().popInt();
+            invokerFrame.getOperandStack().pushInt(retInt);
         }
     },
     L_RETURN("lreturn", 0xad) {
         @Override
         public void execute(JFrame frame) {
-            long val = frame.getOperandStack().popLong();
-            JFrame invokerFrame = frame.getJThread().popFrame();
-            invokerFrame.getOperandStack().pushLong(val);
+            JFrame currentFrame = frame.getJThread().popFrame();
+            JFrame invokerFrame = frame.getJThread().currentFrame();
+            long retLong = currentFrame.getOperandStack().popLong();
+            invokerFrame.getOperandStack().pushLong(retLong);
         }
     },
     F_RETURN("freturn", 0xae) {
         @Override
         public void execute(JFrame frame) {
-            float val = frame.getOperandStack().popFloat();
-            JFrame invokerFrame = frame.getJThread().popFrame();
-            invokerFrame.getOperandStack().pushFloat(val);
+            JFrame currentFrame = frame.getJThread().popFrame();
+            JFrame invokerFrame = frame.getJThread().currentFrame();
+            float retFloat = currentFrame.getOperandStack().popFloat();
+            invokerFrame.getOperandStack().pushFloat(retFloat);
         }
     },
     D_RETURN("dreturn", 0xaf) {
         @Override
         public void execute(JFrame frame) {
-            double val = frame.getOperandStack().popDouble();
-            JFrame invokerFrame = frame.getJThread().popFrame();
-            invokerFrame.getOperandStack().pushDouble(val);
+            JFrame currentFrame = frame.getJThread().popFrame();
+            JFrame invokerFrame = frame.getJThread().currentFrame();
+            double retDouble = currentFrame.getOperandStack().popDouble();
+            invokerFrame.getOperandStack().pushDouble(retDouble);
         }
     },
     A_RETURN("areturn", 0xb0) {
         @Override
         public void execute(JFrame frame) {
-            JObject val = frame.getOperandStack().popRef();
-            JFrame invokerFrame = frame.getJThread().popFrame();
-            invokerFrame.getOperandStack().pushRef(val);
+            JFrame currentFrame = frame.getJThread().popFrame();
+            JFrame invokerFrame = frame.getJThread().currentFrame();
+            JObject retRef = currentFrame.getOperandStack().popRef();
+            invokerFrame.getOperandStack().pushRef(retRef);
         }
     },
     RETURN("return", 0xb1) {
@@ -1801,6 +1807,11 @@ public enum InstructionEnum implements Instruction {
         @Override
         public void execute(JFrame frame) {
             JClass clazz = frame.getMethod().getClazz().getConstantPool().getClassRef(this.index);
+            if (!clazz.isInitStarted()) {
+                frame.revertNextPc();
+                ClassInvokeLogic.initClass(frame.getJThread(), clazz);
+                return;
+            }
             if(clazz.isInterface() || clazz.isAbstract()) {
                 throw new InstantiationError(clazz.getName());
             }
@@ -1819,12 +1830,12 @@ public enum InstructionEnum implements Instruction {
         public void execute(JFrame frame) {
             JField field = frame.getMethod().getClazz().getConstantPool().getFieldRef(this.index);
             JClass clazz = field.getClazz();
-            //todo 没有初始化，就初始化
-//            if (!clazz.isInitStarted()) {
-//                frame.revertNextPc();
-//                clazz.initClass(frame.getJThread(), clazz);
-//                return;
-//            }
+            //没有初始化，就初始化
+            if (!clazz.isInitStarted()) {
+                frame.revertNextPc();
+                ClassInvokeLogic.initClass(frame.getJThread(), clazz);
+                return;
+            }
             if (!field.isStatic()) {
                 throw new IncompatibleClassChangeError();
             }
@@ -1857,12 +1868,12 @@ public enum InstructionEnum implements Instruction {
         public void execute(JFrame frame) {
             JField field = frame.getMethod().getClazz().getConstantPool().getFieldRef(this.index);
             JClass clazz = field.getClazz();
-            //todo 没有初始化，就初始化
-//            if (!clazz.isInitStarted()) {
-//                frame.revertNextPc();
-//                clazz.initClass(frame.getJThread(), clazz);
-//                return;
-//            }
+            //没有初始化，就初始化
+            if (!clazz.isInitStarted()) {
+                frame.revertNextPc();
+                ClassInvokeLogic.initClass(frame.getJThread(), clazz);
+                return;
+            }
             if (!field.isStatic()) {
                 throw new IncompatibleClassChangeError();
             }
@@ -2097,11 +2108,18 @@ public enum InstructionEnum implements Instruction {
         }
         @Override
         public void execute(JFrame frame) {
-            JConstantPool constantPool = frame.getMethod().getClazz().getConstantPool();
+            JClass clazz = frame.getMethod().getClazz();
+            JConstantPool constantPool = clazz.getConstantPool();
             MethodRef methodRef = (MethodRef)constantPool.getConstants()[this.index];
             JMethod method = methodRef.resolvedMethod();
             if (!method.isStatic()) {
                 throw new RuntimeException("java.lang.IncompatibleClassChangeError");
+            }
+            //没有初始化，就初始化
+            if (!clazz.isInitStarted()) {
+                frame.revertNextPc();
+                ClassInvokeLogic.initClass(frame.getJThread(), clazz);
+                return;
             }
             MethodInvokeLogic.invokeMethod(frame,method);
         }
@@ -2123,6 +2141,11 @@ public enum InstructionEnum implements Instruction {
             }
             JObject ref = frame.getOperandStack().GetRefFromTop(resolvedMethod.getArgSlotCount() - 1);
             if (ref == null) {
+                // todo 添加一个例外
+                if (methodRef.getName().equals("println")) {
+                    println(frame.getOperandStack(),methodRef.getDescriptor());
+                    return;
+                }
                 throw new RuntimeException("java.lang.NullPointerException");
             }
             if (resolvedMethod.isProtected() && resolvedMethod.getClazz().isSuperClassOf(currentClass) && resolvedMethod.getClazz().getPackageName().equals(currentClass.getPackageName()) &&  ref.getClazz() != currentClass && !ref.getClazz().isSubClassOf(currentClass)) {
@@ -2133,6 +2156,23 @@ public enum InstructionEnum implements Instruction {
                 throw new RuntimeException("java.lang.AbstractMethodError");
             }
             MethodInvokeLogic.invokeMethod(frame,methodToBeInvoked);
+        }
+
+        private void println(OperandStack operandStack,String descriptor) {
+            switch (descriptor){
+                case "(Z)V" -> System.out.printf("%b\n", operandStack.popInt() != 0);
+                case "(C)V" -> System.out.printf("%c\n", operandStack.popInt());
+                case "(B)V" -> System.out.printf("%d\n", operandStack.popInt());
+                case "(S)V" -> System.out.printf("%d\n", operandStack.popInt());
+                case "(I)V" -> System.out.printf("%d\n", operandStack.popInt());
+                case "(F)V" -> System.out.printf("%f\n", operandStack.popFloat());
+                case "(J)V" -> System.out.printf("%d\n", operandStack.popLong());
+                case "(D)V" -> System.out.printf("%f\n", operandStack.popDouble());
+                default -> {
+                    System.out.printf("println:" + descriptor); operandStack.popRef();
+                }
+            }
+
         }
     },
     INVOKEINTERFACE("invokeinterface", 0xb9) {

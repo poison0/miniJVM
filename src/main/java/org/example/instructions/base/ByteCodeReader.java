@@ -1,6 +1,7 @@
 package org.example.instructions.base;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -10,7 +11,8 @@ import java.nio.ByteOrder;
  * @auth nss
  * @date 2024/1/16
  */
-@Data
+@Getter
+@Setter
 public class ByteCodeReader {
     private ByteBuffer code;
     private int pc;

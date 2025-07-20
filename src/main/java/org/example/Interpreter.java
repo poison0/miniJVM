@@ -20,33 +20,31 @@ public class Interpreter {
         //将栈帧推入线程
         thread.pushFrame(frame);
         //获取指令
-        loop(thread,method.getCode(),logInst);
+        loop(thread,logInst);
     }
-    public void loop(JThread thread,byte[] codeBytes,boolean logInst) {
-        JFrame frame = thread.currentFrame();
-        ByteCodeReader reader = new ByteCodeReader(codeBytes,frame.getNextPC());
+    public void loop(JThread thread,boolean logInst) {
         try{
             do {
+                JFrame frame = thread.currentFrame();
+                ByteCodeReader reader = new ByteCodeReader(frame.getMethod().getCode(), frame.getNextPC());
                 reader.setPc(frame.getNextPC());
                 thread.setPc(frame.getNextPC());
                 int opcode = reader.readUint8();
                 InstructionEnum instruction = InstructionEnum.getInstructionEnum(opcode);
                 instruction.fetchOperands(reader);
                 frame.setNextPC(reader.getPc());
-                System.out.println("pc:" + reader.getPc() + " opcode:" + opcode + " instruction:" + instruction.getName());
                 if (logInst) {
+                    System.out.println("pc:" + reader.getPc() + " opcode:" + opcode + " instruction:" + instruction.getName());
                     logInst(frame, instruction);
                 }
                 instruction.execute(frame);
             } while (!thread.isStackEmpty());
         }catch (Exception e) {
             e.printStackTrace();
-            System.out.println("LocalVars:"+frame.getLocalVars());
-            System.out.println("OperandStack:"+frame.getOperandStack());
         }
     }
 
     private void logInst(JFrame frame, InstructionEnum instruction) {
-        System.out.println(frame.getClass().getName()+"."+frame.getMethod().getName()+"() #"+frame.getJThread().getPc()+" "+instruction+" "+instruction+"\n");
+        System.out.println(frame.getMethod().getClazz().getName()+"."+frame.getMethod().getName()+"() #"+frame.getJThread().getPc()+" "+instruction+"\n");
     }
 }

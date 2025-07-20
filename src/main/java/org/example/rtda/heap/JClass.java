@@ -67,6 +67,10 @@ public class JClass {
      * 静态变量
      */
     private LocalVars staticVars;
+    /**
+     * 是否初始化了
+     */
+    private boolean initStarted = false;
 
     /**
      * 从class文件中加载类信息
@@ -205,10 +209,6 @@ public class JClass {
      * @return 如果当前类是目标类的超类则返回true，否则返回false
      */
     public boolean isSuperClassOf(JClass currentClass) {
-        // 如果目标类就是当前类本身，直接返回true
-        if (currentClass == this) {
-            return true;
-        }
         // 如果目标类没有父类了，说明当前类不在其继承链上
         if (currentClass.superClass == null) {
             return false;
@@ -220,4 +220,19 @@ public class JClass {
     public boolean isSuper() {
         return AssessUtil.isSuper(accessFlags);
     }
+
+
+    public void startInit() {
+        this.initStarted = true;
+    }
+
+    public JMethod getClinitMethod() {
+        for (JMethod method : getMethods()) {
+            if (method.getName().equals("<clinit>") && method.getDescriptor().equals("()V")) {
+                return method;
+            }
+        }
+        return null;
+    }
+
 }

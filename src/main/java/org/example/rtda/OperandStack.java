@@ -1,13 +1,15 @@
 package org.example.rtda;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.rtda.heap.JObject;
 
 /**
  * @auth nss
  * @date 2024/1/14
  */
-@Data
+@Getter
+@Setter
 public class OperandStack {
     private int size;
     private Slot[] slots;
@@ -82,7 +84,9 @@ public class OperandStack {
         return ref;
     }
     public void pushSlot(Slot slot) {
-        slots[size] = slot;
+        slots[size] = new Slot(); // 创建新对象
+        slots[size].setNum(slot.getNum()); // 复制值
+        slots[size].setRef(slot.getRef()); // 复制引用
         size++;
     }
     public Slot popSlot() {
