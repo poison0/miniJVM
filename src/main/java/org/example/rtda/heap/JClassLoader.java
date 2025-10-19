@@ -40,8 +40,28 @@ public class JClassLoader {
         if (classMap.containsKey(name)){
             return classMap.get(name);
         }
-        //todo 加载非数组类型
+        if (name.startsWith("[")) {
+            return loadArrayClass(name);
+        }
+        //加载非数组类型
         return loadNonArrayClass(name);
+    }
+
+    /**
+     * 加载数组类型
+     * @param name 类名
+     */
+    private JClass loadArrayClass(String name) {
+        JClass arrayClass = new JClass();
+        // ACC_PUBLIC
+        arrayClass.setAccessFlags(0x0001);
+        arrayClass.setName(name);
+        arrayClass.setClassLoader(this);
+        arrayClass.setInitStarted(true);
+        arrayClass.setSuperClass(this.loadClass("java/lang/Object"));
+        arrayClass.setInterfaces(new JClass[]{this.loadClass("java/lang/Cloneable"),this.loadClass("java/io/Serializable")});
+        this.classMap.put(name,arrayClass);
+        return arrayClass;
     }
 
     /**

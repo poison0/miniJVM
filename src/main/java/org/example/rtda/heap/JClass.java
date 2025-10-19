@@ -1,6 +1,7 @@
 package org.example.rtda.heap;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.classfile.classfield.ClassFile;
 import org.example.classfile.classfield.constantpool.ConstantInfo;
@@ -14,6 +15,7 @@ import org.example.util.AssessUtil;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class JClass {
     /**
      * 类的访问标志
