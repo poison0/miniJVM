@@ -1,6 +1,5 @@
 package org.example.rtda.heap;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.rtda.Slot;
@@ -11,12 +10,31 @@ import org.example.rtda.Slot;
  */
 @Getter
 @Setter
-@AllArgsConstructor
 public class JObject {
     private JClass clazz;
-    private Slot[] fields;
+    /**
+     * 有可能是数组或者字段
+     */
+    private Object data;
 
     public boolean isInstanceOf(JClass clazz) {
         return clazz.isAssignableFrom(this.clazz);
+    }
+
+    /* *
+     *  创建一个普通对象
+     * @author nss
+     **/
+    public JObject(JClass clazz, Slot[] fields) {
+        this.clazz = clazz;
+        this.data = fields;
+    }
+
+    /**
+     * 获取字段
+     * @author nss
+     */
+    public Slot[] getFields() {
+        return (Slot[]) this.data;
     }
 }
