@@ -12,7 +12,8 @@ public enum ClassFieldTypeEnum {
     U1(ClassFieldType.U1.class,1),
     U2(ClassFieldType.U2.class,2),
     U4(ClassFieldType.U4.class,4),
-    U8(ClassFieldType.U8.class,8);
+    U8(ClassFieldType.U8.class,8),
+    CUSTOM_BYTES(ClassFieldType.CustomBytes.class,null);
     private final Class<? extends ClassFieldType> clazz;
     private final Integer length;
 
