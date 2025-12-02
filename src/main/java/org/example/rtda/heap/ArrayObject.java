@@ -61,4 +61,21 @@ public class ArrayObject {
     public static JObject[] refs(JObject jObject) {
         return (JObject[]) jObject.getData();
     }
+
+    /**
+     * 数组长度
+     */
+    public static int arrayLength(JObject jObject) {
+        Object data = jObject.getData();
+        return switch (data) {
+            case int[] ints -> ints.length;
+            case short[] shorts -> shorts.length;
+            case char[] chars -> chars.length;
+            case long[] longs -> longs.length;
+            case float[] floats -> floats.length;
+            case double[] doubles -> doubles.length;
+            case JObject[] jObjects -> jObjects.length;
+            case null, default -> throw new RuntimeException("not Array!");
+        };
+    }
 }
