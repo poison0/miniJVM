@@ -40,7 +40,7 @@ public class JField {
     private int slotId;
 
     /**
-     * 常量值索引
+     * 常量值索引(只有static 字段有，可以通过该索引从常量池中找到常量值，赋初始值给字段)
      */
     private int constValueIndex;
 

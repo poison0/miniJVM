@@ -9,8 +9,8 @@ public class ArrayObject {
     /**
      * 获取bytes类型数据
      */
-    public static int[] bytes(JObject jObject) {
-        return (int[]) jObject.getData();
+    public static byte[] bytes(JObject jObject) {
+        return (byte[]) jObject.getData();
     }
 
     /**

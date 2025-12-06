@@ -29,6 +29,13 @@ public class JObject {
         this.clazz = clazz;
         this.data = fields;
     }
+    /**
+     * 创建一个对象
+     */
+    public JObject(JClass clazz, Object data) {
+        this.clazz = clazz;
+        this.data = data;
+    }
 
     /**
      * 获取字段

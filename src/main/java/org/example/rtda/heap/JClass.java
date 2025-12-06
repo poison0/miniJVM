@@ -79,23 +79,89 @@ public class JClass {
      */
     public JClass(ClassFile file) {
         this.accessFlags = file.getAccessFlags().toInteger();
-        this.name = ConstantInfo.getUtf8ByClassInfo(file.getConstantPool(),file.getThisClass().toInteger());
+        this.name = ConstantInfo.getUtf8ByClassInfo(file.getConstantPool(), file.getThisClass().toInteger());
         if (file.getSuperClass().toInteger() != 0) {
-            this.superClassName = ConstantInfo.getUtf8ByClassInfo(file.getConstantPool(),file.getSuperClass().toInteger());
+            this.superClassName = ConstantInfo.getUtf8ByClassInfo(file.getConstantPool(), file.getSuperClass().toInteger());
         }
         this.interfaceNames = new String[file.getInterfacesCount().toInteger()];
         for (int i = 0; i < file.getInterfacesCount().toValue(); i++) {
-            this.interfaceNames[i] = ConstantInfo.getUtf8ByClassInfo(file.getConstantPool(),file.getInterfaces()[i].getInterfaceIndex().toInteger());
+            this.interfaceNames[i] = ConstantInfo.getUtf8ByClassInfo(file.getConstantPool(), file.getInterfaces()[i].getInterfaceIndex().toInteger());
         }
-        this.constantPool = new JConstantPool(this,file.getConstantPool());
+        this.constantPool = new JConstantPool(this, file.getConstantPool());
         this.fields = new JField[file.getFieldsCount().toInteger()];
         for (int i = 0; i < file.getFieldsCount().toValue(); i++) {
-            this.fields[i] = new JField(this,file.getFields()[i],file.getConstantPool());
+            this.fields[i] = new JField(this, file.getFields()[i], file.getConstantPool());
         }
         this.methods = new JMethod[file.getMethodsCount().toInteger()];
         for (int i = 0; i < file.getMethodsCount().toValue(); i++) {
-            this.methods[i] = new JMethod(this,file.getMethods()[i],file.getConstantPool());
+            this.methods[i] = new JMethod(this, file.getMethods()[i], file.getConstantPool());
         }
+    }
+
+    /**
+     * 创建数组对象
+     */
+    public JObject newArray(int count) {
+        if (!this.isArray()) {
+            throw new RuntimeException("Not an array class: " + this.name);
+        }
+        Object array = switch (this.name) {
+            case "[B" -> new byte[count];
+            case "[S" -> new short[count];
+            case "[C" -> new char[count];
+            case "[I" -> new int[count];
+            case "[J" -> new long[count];
+            case "[F" -> new float[count];
+            case "[D" -> new double[count];
+            default -> new JObject[count];
+        };
+        return new JObject(this, array);
+    }
+
+    /**
+     * 获取当前类的数组类
+     */
+    public JClass arrayClass(){
+        return classLoader.loadClass(getArrayClassName(this.name));
+    }
+
+    private String getArrayClassName(String className) {
+        return "["+toDescriptor(className);
+    }
+
+    private String toDescriptor(String className) {
+        if (className.startsWith("[")) {
+            return className;
+        }
+        if (className.equals("boolean")) {
+            return "Z";
+        }
+        if (className.equals("byte")) {
+            return "B";
+        }
+        if (className.equals("char")) {
+            return "C";
+        }
+        if (className.equals("short")) {
+            return "S";
+        }
+        if (className.equals("int")) {
+            return "I";
+        }
+        if (className.equals("float")) {
+            return "F";
+        }
+        if (className.equals("long")) {
+            return "J";
+        }
+        if (className.equals("double")) {
+            return "D";
+        }
+        return "L" + className + ";";
+    }
+
+    public boolean isArray() {
+        return this.name.charAt(0) == '[';
     }
 
     /**
@@ -137,7 +203,7 @@ public class JClass {
      */
     public JObject newObject() {
         //todo 之后再说
-        return new JObject(this,new Slot[this.instanceSlotCount]);
+        return new JObject(this, new Slot[this.instanceSlotCount]);
     }
 
     /**
@@ -170,6 +236,7 @@ public class JClass {
 
     /**
      * 检查当前类是否实现了指定的接口
+     *
      * @param jClass 要检查的接口类
      * @return 如果当前类或其父类实现了指定接口或其子接口则返回true，否则返回false
      */
@@ -207,6 +274,7 @@ public class JClass {
 
     /**
      * 判断当前类是否是给定类的超类
+     *
      * @param currentClass 要检查的目标类
      * @return 如果当前类是目标类的超类则返回true，否则返回false
      */
@@ -236,5 +304,6 @@ public class JClass {
         }
         return null;
     }
+
 
 }

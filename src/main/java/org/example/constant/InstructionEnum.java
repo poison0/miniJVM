@@ -1515,7 +1515,7 @@ public enum InstructionEnum implements Instruction {
     RETURN("return", 0xb1) {
         @Override
         public void execute(JFrame frame) {
-            frame.getJThread().popFrame();
+//            frame.getJThread().popFrame();
         }
     },
     JSR("jsr", 0xa8) {
@@ -1807,11 +1807,11 @@ public enum InstructionEnum implements Instruction {
         @Override
         public void execute(JFrame frame) {
             JClass clazz = frame.getMethod().getClazz().getConstantPool().getClassRef(this.index);
-            if (!clazz.isInitStarted()) {
-                frame.revertNextPc();
-                ClassInvokeLogic.initClass(frame.getJThread(), clazz);
-                return;
-            }
+//            if (!clazz.isInitStarted()) {
+//                frame.revertNextPc();
+//                ClassInvokeLogic.initClass(frame.getJThread(), clazz);
+//                return;
+//            }
             if(clazz.isInterface() || clazz.isAbstract()) {
                 throw new InstantiationError(clazz.getName());
             }
@@ -1831,11 +1831,11 @@ public enum InstructionEnum implements Instruction {
             JField field = frame.getMethod().getClazz().getConstantPool().getFieldRef(this.index);
             JClass clazz = field.getClazz();
             //没有初始化，就初始化
-            if (!clazz.isInitStarted()) {
-                frame.revertNextPc();
-                ClassInvokeLogic.initClass(frame.getJThread(), clazz);
-                return;
-            }
+//            if (!clazz.isInitStarted()) {
+//                frame.revertNextPc();
+//                ClassInvokeLogic.initClass(frame.getJThread(), clazz);
+//                return;
+//            }
             if (!field.isStatic()) {
                 throw new IncompatibleClassChangeError();
             }
@@ -2115,12 +2115,12 @@ public enum InstructionEnum implements Instruction {
             if (!method.isStatic()) {
                 throw new RuntimeException("java.lang.IncompatibleClassChangeError");
             }
-            //没有初始化，就初始化
-            if (!clazz.isInitStarted()) {
-                frame.revertNextPc();
-                ClassInvokeLogic.initClass(frame.getJThread(), clazz);
-                return;
-            }
+//            //没有初始化，就初始化
+//            if (!clazz.isInitStarted()) {
+//                frame.revertNextPc();
+//                ClassInvokeLogic.initClass(frame.getJThread(), clazz);
+//                return;
+//            }
             MethodInvokeLogic.invokeMethod(frame,method);
         }
     },
@@ -2205,6 +2205,202 @@ public enum InstructionEnum implements Instruction {
                 throw new RuntimeException("java.lang.IllegalAccessError");
             }
             MethodInvokeLogic.invokeMethod(frame,methodToBeInvoked);
+        }
+    },
+    // 创建一个原始类型数组，并压入栈顶
+    NEWARRAY("newarray", 0xbc){
+        @Override
+        public void fetchOperands(ByteCodeReader reader) {
+            this.atype = reader.readUint8();
+        }
+        @Override
+        public void execute(JFrame frame) {
+            OperandStack stack = frame.getOperandStack();
+            int count = stack.popInt();
+            if (count < 0) {
+                throw new RuntimeException("java.lang.NegativeArraySizeException");
+            }
+            JClassLoader classLoader = frame.getMethod().getClazz().getClassLoader();
+            JClass clazz = getPrimitiveArrayClass(classLoader, this.atype);
+            JObject jObject = clazz.newArray(count);
+            stack.pushRef(jObject);
+        }
+        private JClass getPrimitiveArrayClass(JClassLoader classLoader, int atype) {
+            return switch (PRIMITIVE_TYPES.get(atype)){
+                    case "AT_BOOLEAN" -> classLoader.loadClass("[Z");
+                    case  "AT_CHAR" -> classLoader.loadClass("[C");
+                    case "AT_FLOAT" -> classLoader.loadClass("[F");
+                    case "AT_DOUBLE" -> classLoader.loadClass("[D");
+                    case "AT_BYTE" -> classLoader.loadClass("[B");
+                    case "AT_SHORT" -> classLoader.loadClass("[S");
+                    case "AT_INT" -> classLoader.loadClass("[I");
+                    case "AT_LONG" -> classLoader.loadClass("[J");
+                    default -> throw new RuntimeException("Invalid atype: " + atype);
+            };
+        }
+        private int atype;
+
+        private static final Map<Integer, String> PRIMITIVE_TYPES = Map.of(4,"AT_BOOLEAN",5,"AT_CHAR",6,"AT_FLOAT",7,"AT_DOUBLE",8,"AT_BYTE",9,"AT_SHORT",10,"AT_INT",11,"AT_LONG");
+    },
+    ANEWARRAY("anewarray", 0xbd) {
+        private int index;
+        @Override
+        public void fetchOperands(ByteCodeReader reader) {
+            this.index = reader.readUint16();
+        }
+        @Override
+        public void execute(JFrame frame) {
+            JClass clazz = frame.getMethod().getClazz();
+            JConstantPool constantPool = clazz.getConstantPool();
+            ClassRef classRef = (ClassRef)constantPool.getConstants()[index];
+            JClass componentClass = classRef.resolvedClass();
+            OperandStack stack = frame.getOperandStack();
+            int count = stack.popInt();
+            if (count < 0) {
+                throw new RuntimeException("java.lang.NegativeArraySizeException");
+            }
+            JClass componentArrayClass = componentClass.arrayClass();
+            JObject arr = componentArrayClass.newArray(count);
+            stack.pushRef(arr);
+        }
+    },
+    ARRAYLENGTH( "arraylength", 0xbe){
+        @Override
+        public void execute(JFrame frame) {
+            JObject ref = frame.getOperandStack().popRef();
+            if (ref == null) {
+                throw new RuntimeException("java.lang.NullPointerException");
+            }
+            int length = ArrayObject.arrayLength(ref);
+            frame.getOperandStack().pushInt(length);
+        }
+    },
+    AALOAD("aaload", 0x32){
+        @Override
+        public void execute(JFrame frame) {
+            OperandStack stack = frame.getOperandStack();
+            int index = stack.popInt();
+            JObject arrRef = stack.popRef();
+            if (arrRef == null) {
+                throw new RuntimeException("java.lang.NullPointerException");
+            }
+            JObject[] data = (JObject[])arrRef.getData();
+            if (data.length <= index || index < 0) {
+                throw new RuntimeException("ja.lang.ArrayIndexOutOfBoundsException");
+            }
+            stack.pushRef(data[index]);
+        }
+    },
+    BALOAD( "baload", 0x33) {
+        @Override
+        public void execute(JFrame frame) {
+            OperandStack stack = frame.getOperandStack();
+            int index = stack.popInt();
+            JObject arrRef = stack.popRef();
+            if (arrRef == null) {
+                throw new RuntimeException("java.lang.NullPointerException");
+            }
+            byte[] data = (byte[])arrRef.getData();
+            if (data.length <= index || index < 0) {
+                throw new RuntimeException("ja.lang.ArrayIndexOutOfBoundsException");
+            }
+            stack.pushInt(data[index]);
+        }
+    },
+    CALOAD( "caload", 0x34) {
+        @Override
+        public void execute(JFrame frame) {
+            OperandStack stack = frame.getOperandStack();
+            int index = stack.popInt();
+            JObject arrRef = stack.popRef();
+            if (arrRef == null) {
+                throw new RuntimeException("java.lang.NullPointerException");
+            }
+            char[] data = (char[])arrRef.getData();
+            if (data.length <= index || index < 0) {
+                throw new RuntimeException("ja.lang.ArrayIndexOutOfBoundsException");
+            }
+            stack.pushInt(data[index]);
+        }
+    },
+    DALOAD("daload", 0x31){
+        @Override
+        public  void execute(JFrame frame) {
+            OperandStack stack = frame.getOperandStack();
+            int index = stack.popInt();
+            JObject arrRef = stack.popRef();
+            if (arrRef == null) {
+                throw new RuntimeException("java.lang.NullPointerException");
+            }
+            double[] data = (double[])arrRef.getData();
+            if (data.length <= index || index < 0) {
+                throw new RuntimeException("ja.lang.ArrayIndexOutOfBoundsException");
+            }
+            stack.pushDouble(data[index]);
+        }
+    },
+    FALOAD("faload",0x30){
+        @Override
+        public  void execute(JFrame frame) {
+            OperandStack stack = frame.getOperandStack();
+            int index = stack.popInt();
+            JObject arrRef = stack.popRef();
+            if (arrRef == null) {
+                throw new RuntimeException("java.lang.NullPointerException");
+            }
+            float[] data = (float[])arrRef.getData();
+            if (data.length <= index || index < 0) {
+                throw new RuntimeException("ja.lang.ArrayIndexOutOfBoundsException");
+            }
+            stack.pushDouble(data[index]);
+        }
+    },
+    IALOAD("iaload",0x2e) {
+        @Override
+        public void execute(JFrame frame) {
+            OperandStack stack = frame.getOperandStack();
+            int index = stack.popInt();
+            JObject arrRef = stack.popRef();
+            if (arrRef == null) {
+                throw new RuntimeException("java.lang.NullPointerException");
+            }
+            int[] data = (int[]) arrRef.getData();
+            if (data.length <= index || index < 0) {
+                throw new RuntimeException("ja.lang.ArrayIndexOutOfBoundsException");
+            }
+            stack.pushDouble(data[index]);
+        }
+    },
+    LALOAD("laload",0x2f) {
+        @Override
+        public void execute(JFrame frame) {
+            OperandStack stack = frame.getOperandStack();
+            int index = stack.popInt();
+            JObject arrRef = stack.popRef();
+            if (arrRef == null) {
+                throw new RuntimeException("java.lang.NullPointerException");
+            }
+            long[] data = (long[]) arrRef.getData();
+            if (data.length <= index || index < 0) {
+                throw new RuntimeException("ja.lang.ArrayIndexOutOfBoundsException");
+            }
+            stack.pushDouble(data[index]);
+        }
+    },
+    SALOAD("saload",0x35) {
+        @Override
+        public void execute(JFrame frame) {
+            OperandStack stack = frame.getOperandStack();
+            int index = stack.popInt();
+            JObject arrRef = stack.popRef();
+            if (arrRef == null) {
+                throw new RuntimeException("java.lang.NullPointerException");
+            }
+            short[] data = (short[]) arrRef.getData();
+            if (data.length <= index || index < 0) {
+                throw new RuntimeException("ja.lang.ArrayIndexOutOfBoundsException");
+            }
+            stack.pushDouble(data[index]);
         }
     }
     ;
