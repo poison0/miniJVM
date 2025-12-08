@@ -32,6 +32,23 @@ public class OperandStack {
         size--;
         return slots[size].getNum();
     }
+    public void pushChar(char val) {
+        slots[size].setNum(val);
+        size++;
+    }
+    public char popChar() {
+        size--;
+        return (char) slots[size].getNum();
+    }
+    public void pushShort(short val) {
+        slots[size].setNum(val);
+        size++;
+    }
+    public short popShort() {
+        size--;
+        return (short) slots[size].getNum();
+    }
+
     //放入一个float
     public void pushFloat(float val) {
         int temp = Float.floatToIntBits(val);

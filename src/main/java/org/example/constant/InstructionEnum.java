@@ -2300,7 +2300,7 @@ public enum InstructionEnum implements Instruction {
             if (arrRef == null) {
                 throw new RuntimeException("java.lang.NullPointerException");
             }
-            byte[] data = (byte[])arrRef.getData();
+            int[] data = (int[])arrRef.getData();
             if (data.length <= index || index < 0) {
                 throw new RuntimeException("ja.lang.ArrayIndexOutOfBoundsException");
             }
@@ -2402,7 +2402,143 @@ public enum InstructionEnum implements Instruction {
             }
             stack.pushDouble(data[index]);
         }
-    }
+    },
+    AASTORE("aastore",0x53) {
+        @Override
+        public void execute(JFrame frame) {
+            OperandStack stack = frame.getOperandStack();
+            JObject val = stack.popRef();
+            int index = stack.popInt();
+            JObject arrRef = stack.popRef();
+            if (arrRef == null) {
+                throw new RuntimeException("java.lang.NullPointerException");
+            }
+            JObject[] data = (JObject[]) arrRef.getData();
+            if (data.length <= index || index < 0) {
+                throw new RuntimeException("ja.lang.ArrayIndexOutOfBoundsException");
+            }
+            data[index] = val;
+        }
+    },
+    BASTORE("bastore",0x54) {
+        @Override
+        public void execute(JFrame frame) {
+            OperandStack stack = frame.getOperandStack();
+            int val = stack.popInt();
+            int index = stack.popInt();
+            JObject arrRef = stack.popRef();
+            if (arrRef == null) {
+                throw new RuntimeException("java.lang.NullPointerException");
+            }
+            byte[] data = (byte[]) arrRef.getData();
+            if (data.length <= index || index < 0) {
+                throw new RuntimeException("ja.lang.ArrayIndexOutOfBoundsException");
+            }
+            data[index] = (byte) val;
+        }
+    },
+    CASTORE("castore",0x55) {
+        @Override
+        public void execute(JFrame frame) {
+            OperandStack stack = frame.getOperandStack();
+            char val = stack.popChar();
+            int index = stack.popInt();
+            JObject arrRef = stack.popRef();
+            if (arrRef == null) {
+                throw new RuntimeException("java.lang.NullPointerException");
+            }
+            char[] data = (char[]) arrRef.getData();
+            if (data.length <= index || index < 0) {
+                throw new RuntimeException("ja.lang.ArrayIndexOutOfBoundsException");
+            }
+            data[index] =  val;
+        }
+    },
+    DASTORE("dastore",0x52) {
+        @Override
+        public void execute(JFrame frame) {
+            OperandStack stack = frame.getOperandStack();
+            double val = stack.popDouble();
+            int index = stack.popInt();
+            JObject arrRef = stack.popRef();
+            if (arrRef == null) {
+                throw new RuntimeException("java.lang.NullPointerException");
+            }
+            double[] data = (double[]) arrRef.getData();
+            if (data.length <= index || index < 0) {
+                throw new RuntimeException("ja.lang.ArrayIndexOutOfBoundsException");
+            }
+            data[index] = val;
+        }
+    },
+    FASTORE("fastore",0x51) {
+        @Override
+        public void execute(JFrame frame) {
+            OperandStack stack = frame.getOperandStack();
+            float val = stack.popFloat();
+            int index = stack.popInt();
+            JObject arrRef = stack.popRef();
+            if (arrRef == null) {
+                throw new RuntimeException("java.lang.NullPointerException");
+            }
+            float[] data = (float[]) arrRef.getData();
+            if (data.length <= index || index < 0) {
+                throw new RuntimeException("ja.lang.ArrayIndexOutOfBoundsException");
+            }
+            data[index] = val;
+        }
+    },
+    IASTORE("iastore",0x4f) {
+        @Override
+        public void execute(JFrame frame) {
+            OperandStack stack = frame.getOperandStack();
+            int val = stack.popInt();
+            int index = stack.popInt();
+            JObject arrRef = stack.popRef();
+            if (arrRef == null) {
+                throw new RuntimeException("java.lang.NullPointerException");
+            }
+            int[] data = (int[]) arrRef.getData();
+            if (data.length <= index || index < 0) {
+                throw new RuntimeException("ja.lang.ArrayIndexOutOfBoundsException");
+            }
+            data[index] = val;
+        }
+    },
+    LASTORE("lastore",0x50) {
+        @Override
+        public void execute(JFrame frame) {
+            OperandStack stack = frame.getOperandStack();
+            long val = stack.popLong();
+            int index = stack.popInt();
+            JObject arrRef = stack.popRef();
+            if (arrRef == null) {
+                throw new RuntimeException("java.lang.NullPointerException");
+            }
+            long[] data = (long[]) arrRef.getData();
+            if (data.length <= index || index < 0) {
+                throw new RuntimeException("ja.lang.ArrayIndexOutOfBoundsException");
+            }
+            data[index] = val;
+        }
+    },
+    SASTORE("sastore",0x56) {
+        @Override
+        public void execute(JFrame frame) {
+            OperandStack stack = frame.getOperandStack();
+            short val = stack.popShort();
+            int index = stack.popInt();
+            JObject arrRef = stack.popRef();
+            if (arrRef == null) {
+                throw new RuntimeException("java.lang.NullPointerException");
+            }
+            short[] data = (short[]) arrRef.getData();
+            if (data.length <= index || index < 0) {
+                throw new RuntimeException("ja.lang.ArrayIndexOutOfBoundsException");
+            }
+            data[index] = (short) val;
+        }
+    },
     ;
     // 助记符
     private final String name;
