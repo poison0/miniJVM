@@ -54,6 +54,7 @@ public class ClassPath {
     }
 
     public byte[] readClass(String className) throws Exception {
+        className = className.replace("/", ".");
         className = className + ".class";
         try {
             return bootClassPath.readClass(className);

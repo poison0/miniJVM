@@ -1,10 +1,12 @@
 package org.example.classfile;
 
+import java.io.Serializable;
+
 /**
  * @auth nss
  * @date 2024/1/2
  */
-public class ClassFileTest {
+public class ClassFileTest implements Serializable {
     public static final boolean FLAG = true;
     public static final byte BYTE = 123;
     public static final char X = 'X';
